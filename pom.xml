@@ -118,7 +118,7 @@
     </build>
 
     <dependencies>
-        <!-- Mulesoft Runitime -->
+        <!-- Mulesoft Runtime -->
         <dependency>
             <groupId>org.mule.runtime</groupId>
             <artifactId>mule-api</artifactId>
