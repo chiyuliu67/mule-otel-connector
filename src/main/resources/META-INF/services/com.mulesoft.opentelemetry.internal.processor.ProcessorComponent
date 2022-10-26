@@ -1,0 +1,2 @@
+com.mulesoft.opentelemetry.internal.processor.HttpComponent
+com.mulesoft.opentelemetry.internal.processor.DatabaseComponent
