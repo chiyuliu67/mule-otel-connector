@@ -7,7 +7,7 @@
 
     <!--A change in version should be reflected in Constants.java
         Constant: LIBRARY_VERSION -->
-    <version>1.0.19</version>
+    <version>1.0.20</version>
     <packaging>mule-extension</packaging>
 
     <parent>
@@ -221,7 +221,6 @@
             <version>4.2.0</version>
             <scope>test</scope>
         </dependency>
-
 
         <!-- SLF4J Bridge -->
         <dependency>
