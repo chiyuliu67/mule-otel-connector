@@ -15,9 +15,8 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 
 /**
- * Configuration to send the traces to a collector. The connector implements
- * OpenTelemetry SDK Autoconfigure. More info please visit the connector GitHub
- * repository.
+ * Configuration to send the traces to an Open Telemetry collector. The
+ * connector implements OpenTelemetry SDK Autoconfigure.
  */
 @Configuration
 public class ConnectorConfiguration implements Startable {

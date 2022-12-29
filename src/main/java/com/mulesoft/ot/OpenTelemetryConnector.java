@@ -8,14 +8,11 @@ import org.mule.runtime.api.meta.Category;
 /**
  * This is the main class of an extension, is the entry point from which
  * configurations, connection providers, operations and sources are going to be
- * declared.
- *
- * <p>
- * https://docs.mulesoft.com/mule-sdk/1.1/module-structure
+ * declared. Link: docs.mulesoft.com/mule-sdk/1.1/module-structure
  */
 @Xml(prefix = "open-telemetry")
 @Extension(name = "Open Telemetry Connector", category = Category.COMMUNITY)
 @Configurations(ConnectorConfiguration.class)
 @SuppressWarnings("unused")
-public class ConnectorExtension {
+public class OpenTelemetryConnector {
 }
