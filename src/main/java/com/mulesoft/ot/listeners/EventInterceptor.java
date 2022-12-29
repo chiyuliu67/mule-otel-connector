@@ -1,4 +1,4 @@
-package com.mulesoft.ot.interceptor;
+package com.mulesoft.ot.listeners;
 
 import com.mulesoft.ot.ConnectorConnection;
 import com.mulesoft.ot.Constants;
@@ -19,9 +19,9 @@ import java.util.function.Supplier;
  *
  */
 @Component
-public class ProcessorEvent implements org.mule.runtime.api.interception.ProcessorInterceptor {
+public class EventInterceptor implements org.mule.runtime.api.interception.ProcessorInterceptor {
 
-    private static final Logger log = LoggerFactory.getLogger(ProcessorEvent.class);
+    private static final Logger log = LoggerFactory.getLogger(EventInterceptor.class);
     private final Supplier<Optional<ConnectorConnection>> connectionSupplier = ConnectorConnection::get;
 
     @Override

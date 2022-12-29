@@ -1,7 +1,7 @@
 package com.mulesoft.ot;
 
 import com.mulesoft.ot.listeners.ProcessorListener;
-import com.mulesoft.ot.listeners.PipelineListener;
+import com.mulesoft.ot.listeners.FlowListener;
 import com.mulesoft.ot.processor.MuleNotificationProcessor;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.lifecycle.Startable;
@@ -50,6 +50,6 @@ public class ConnectorConfiguration implements Startable {
         notificationListenerRegistry.registerListener(new ProcessorListener(muleNotificationProcessor));
 
         log.debug("Register PipelineListener");
-        notificationListenerRegistry.registerListener(new PipelineListener(muleNotificationProcessor));
+        notificationListenerRegistry.registerListener(new FlowListener(muleNotificationProcessor));
     }
 }
