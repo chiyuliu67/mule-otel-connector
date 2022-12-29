@@ -1,4 +1,4 @@
-package com.mulesoft.opentelemetry.internal;
+package com.mulesoft.ot;
 
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapGetter;

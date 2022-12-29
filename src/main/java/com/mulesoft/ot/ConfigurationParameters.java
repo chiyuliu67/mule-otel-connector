@@ -1,4 +1,4 @@
-package com.mulesoft.opentelemetry.internal;
+package com.mulesoft.ot;
 
 public class ConfigurationParameters {
     private final ServiceAttributes serviceAttributes;

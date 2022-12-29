@@ -1,4 +1,4 @@
-package com.mulesoft.opentelemetry.internal;
+package com.mulesoft.ot;
 
 import org.mule.runtime.api.meta.ExpressionSupport;
 import org.mule.runtime.extension.api.annotation.Alias;

@@ -1,6 +1,6 @@
-package com.mulesoft.opentelemetry.internal;
+package com.mulesoft.ot;
 
-import com.mulesoft.opentelemetry.internal.tracing.TraceVault;
+import com.mulesoft.ot.tracing.TraceVault;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.api.trace.Tracer;

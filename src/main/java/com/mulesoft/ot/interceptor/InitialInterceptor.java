@@ -1,4 +1,4 @@
-package com.mulesoft.opentelemetry.internal.interceptor;
+package com.mulesoft.ot.interceptor;
 
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.interception.ProcessorInterceptorFactory;

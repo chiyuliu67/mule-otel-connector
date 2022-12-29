@@ -1,7 +1,7 @@
-package com.mulesoft.opentelemetry.internal.processor;
+package com.mulesoft.ot.processor;
 
-import com.mulesoft.opentelemetry.internal.Constants;
-import com.mulesoft.opentelemetry.internal.ContextHandler;
+import com.mulesoft.ot.Constants;
+import com.mulesoft.ot.ContextHandler;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.context.propagation.TextMapGetter;

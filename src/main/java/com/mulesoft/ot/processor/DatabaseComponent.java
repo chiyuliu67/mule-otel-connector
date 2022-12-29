@@ -1,6 +1,6 @@
-package com.mulesoft.opentelemetry.internal.processor;
+package com.mulesoft.ot.processor;
 
-import com.mulesoft.opentelemetry.internal.Constants;
+import com.mulesoft.ot.Constants;
 import io.opentelemetry.api.trace.SpanKind;
 import org.mule.runtime.api.component.Component;
 import org.mule.runtime.api.component.ComponentIdentifier;

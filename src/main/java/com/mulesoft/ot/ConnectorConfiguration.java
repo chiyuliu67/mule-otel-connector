@@ -1,8 +1,8 @@
-package com.mulesoft.opentelemetry.internal;
+package com.mulesoft.ot;
 
-import com.mulesoft.opentelemetry.internal.listeners.ProcessorListener;
-import com.mulesoft.opentelemetry.internal.listeners.PipelineListener;
-import com.mulesoft.opentelemetry.internal.processor.MuleNotificationProcessor;
+import com.mulesoft.ot.listeners.ProcessorListener;
+import com.mulesoft.ot.listeners.PipelineListener;
+import com.mulesoft.ot.processor.MuleNotificationProcessor;
 import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.lifecycle.Startable;
 import org.mule.runtime.api.notification.NotificationListenerRegistry;

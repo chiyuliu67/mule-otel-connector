@@ -1,4 +1,4 @@
-package com.mulesoft.opentelemetry.internal.processor;
+package com.mulesoft.ot.processor;
 
 import org.mule.runtime.api.component.Component;
 import org.mule.runtime.api.component.location.ConfigurationComponentLocator;

@@ -1,4 +1,4 @@
-package com.mulesoft.opentelemetry.internal.processor;
+package com.mulesoft.ot.processor;
 
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;

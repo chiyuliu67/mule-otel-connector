@@ -1,6 +1,6 @@
-package com.mulesoft.opentelemetry.internal.listeners;
+package com.mulesoft.ot.listeners;
 
-import com.mulesoft.opentelemetry.internal.processor.MuleNotificationProcessor;
+import com.mulesoft.ot.processor.MuleNotificationProcessor;
 import org.mule.runtime.api.notification.MessageProcessorNotification;
 import org.mule.runtime.api.notification.MessageProcessorNotificationListener;
 import org.slf4j.Logger;

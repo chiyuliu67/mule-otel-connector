@@ -1,6 +1,6 @@
-package com.mulesoft.opentelemetry.internal.processor;
+package com.mulesoft.ot.processor;
 
-import com.mulesoft.opentelemetry.internal.ContextHandler;
+import com.mulesoft.ot.ContextHandler;
 import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.location.ConfigurationComponentLocator;
 import org.mule.runtime.api.notification.EnrichedServerNotification;

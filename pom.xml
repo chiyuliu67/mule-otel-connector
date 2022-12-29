@@ -5,9 +5,8 @@
     <groupId>078efef1-d139-48ed-92f5-f8d4a0592374</groupId>
     <artifactId>mule-otel-connector</artifactId>
 
-    <!--A change in version should be reflected in Constants.java
-        Constant: LIBRARY_VERSION -->
-    <version>1.0.20</version>
+    <!--A change in version should be reflected in Constants.java (LIBRARY_VERSION) -->
+    <version>1.0.29</version>
     <packaging>mule-extension</packaging>
 
     <parent>

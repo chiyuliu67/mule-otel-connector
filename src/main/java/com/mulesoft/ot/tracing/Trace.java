@@ -1,4 +1,4 @@
-package com.mulesoft.opentelemetry.internal.tracing;
+package com.mulesoft.ot.tracing;
 
 import java.io.Serializable;
 

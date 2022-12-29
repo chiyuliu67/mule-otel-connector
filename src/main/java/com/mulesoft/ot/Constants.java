@@ -1,11 +1,11 @@
-package com.mulesoft.opentelemetry.internal;
+package com.mulesoft.ot;
 
 public class Constants {
 
     // **********************************
     // Connector Library version
     // **********************************
-    public static final String LIBRARY_VERSION = "1.0.19";
+    public static final String LIBRARY_VERSION = "1.0.29";
     public static final String LIBRARY_NAME = "mule-otel-connector";
 
     // **********************************

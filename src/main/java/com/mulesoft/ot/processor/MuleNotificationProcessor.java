@@ -1,7 +1,7 @@
-package com.mulesoft.opentelemetry.internal.processor;
+package com.mulesoft.ot.processor;
 
-import com.mulesoft.opentelemetry.internal.ConnectorConfiguration;
-import com.mulesoft.opentelemetry.internal.ConnectorConnection;
+import com.mulesoft.ot.ConnectorConfiguration;
+import com.mulesoft.ot.ConnectorConnection;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.api.trace.StatusCode;

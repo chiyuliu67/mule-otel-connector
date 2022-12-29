@@ -210,7 +210,8 @@ Setting the httpStatus variable example
 To show the connector logs with debug level, add the next logger to log4j2.xml:
 
 ```xml
-<AsyncLogger name="com.mulesoft.opentelemetry" level="DEBUG"/>
+
+<AsyncLogger name="com.mulesoft.ot" level="DEBUG"/>
 ```
 
 Available levels: INFO, DEBUG, TRACE
