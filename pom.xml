@@ -6,7 +6,7 @@
     <artifactId>mule-otel-connector</artifactId>
 
     <!--A change in version should be reflected in Constants.java (LIBRARY_VERSION) -->
-    <version>1.0.29</version>
+    <version>1.0.32</version>
     <packaging>mule-extension</packaging>
 
     <parent>
