@@ -42,38 +42,17 @@ public class ConnectorConnection implements ContextHandler {
     /*
      * Set the configuration for the Open Telemetry library
      */
-    private ConnectorConnection(ConfigurationParameters configurationParameters) {
+    private ConnectorConnection(String serviceName, String additionalTags, String collectorEndpoint) {
         final Map<String, String> configMap = new HashMap<>();
 
         AutoConfiguredOpenTelemetrySdkBuilder builder = AutoConfiguredOpenTelemetrySdk.builder();
-        if (configurationParameters != null) {
-
-            // Disable the metrics, this data is not implemented in Jaeger
-            configMap.put(Constants.OTEL_METRICS_EXPORTER, Constants.NONE);
-
-            if (configurationParameters.getServiceAttributes() != null) {
-
-                // Set the service name
-                if (configurationParameters.getServiceAttributes().getServiceName() != null) {
-                    configMap.put(Constants.OTEL_SERVICE_NAME,
-                            configurationParameters.getServiceAttributes().getServiceName());
-                }
-                if (configurationParameters.getServiceAttributes().getAdditionalTags() != null) {
-                    configMap.put(Constants.OTEL_RESOURCE_ATTRIBUTES,
-                            configurationParameters.getServiceAttributes().getAdditionalTags());
-                }
-            }
-
-            // Set the exporter
-            if (configurationParameters.getServiceAttributes().getCollectorEndpoint() != null) {
-                configMap.put(Constants.OTEL_TRACES_EXPORTER, Constants.OTLP);
-                configMap.put(Constants.OTEL_EXPORTER_OTLP_ENDPOINT,
-                        configurationParameters.getServiceAttributes().getCollectorEndpoint());
-            }
-
-            builder.addPropertiesSupplier(() -> Collections.unmodifiableMap(configMap));
-            log.debug("Configuration: {}", configMap);
-        }
+        configMap.put(Constants.OTEL_METRICS_EXPORTER, Constants.NONE);
+        configMap.put(Constants.OTEL_SERVICE_NAME, serviceName);
+        configMap.put(Constants.OTEL_RESOURCE_ATTRIBUTES, additionalTags);
+        configMap.put(Constants.OTEL_TRACES_EXPORTER, Constants.OTLP);
+        configMap.put(Constants.OTEL_EXPORTER_OTLP_ENDPOINT, collectorEndpoint);
+        builder.addPropertiesSupplier(() -> Collections.unmodifiableMap(configMap));
+        log.debug("Configuration: {}", configMap);
         log.debug("Initializing Open Telemetry");
 
         builder.setServiceClassLoader(AutoConfiguredOpenTelemetrySdkBuilder.class.getClassLoader());
@@ -86,9 +65,10 @@ public class ConnectorConnection implements ContextHandler {
         return Optional.ofNullable(connectorConnection);
     }
 
-    public static synchronized ConnectorConnection getInstance(ConfigurationParameters configurationParameters) {
+    public static synchronized ConnectorConnection getInstance(String serviceName, String additionalTags,
+            String collectorEndpoint) {
         if (connectorConnection == null) {
-            connectorConnection = new ConnectorConnection(configurationParameters);
+            connectorConnection = new ConnectorConnection(serviceName, additionalTags, collectorEndpoint);
         }
         return connectorConnection;
     }
