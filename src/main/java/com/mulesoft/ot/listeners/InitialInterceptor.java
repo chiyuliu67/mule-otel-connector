@@ -5,7 +5,7 @@ import org.mule.runtime.api.interception.ProcessorInterceptorFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * Will intercept the root processor flow. This class must be registered in
+ * Intercepts the root processor flow. This class must be registered in
  * registry-bootstrap.properties
  */
 @Component
@@ -17,7 +17,7 @@ public class InitialInterceptor implements ProcessorInterceptorFactory {
     }
 
     /**
-     * This intercepts the first processor of root container
+     * Intercepts the first processor of root container
      */
     @Override
     public boolean intercept(ComponentLocation location) {

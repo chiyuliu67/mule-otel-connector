@@ -23,12 +23,12 @@ import java.util.Optional;
  * This class represents an extension connection.
  *
  * <p>
- * The configuration of the library is based on the next documentation: https
- * //github.com/open-telemetry/opentelemetry-java/tree/main/sdk-extensions/autoconfigure
+ * The configuration of the library is based:
+ * github.com/open-telemetry/opentelemetry-java/tree/main/sdk-extensions/autoconfigure
  *
  * <p>
- * The guide to configure the library for Manual Instrumentation is here: https
- * //opentelemetry.io/docs/instrumentation/java/manual/
+ * The guide to configure the library for Manual Instrumentation
+ * opentelemetry.io/docs/instrumentation/java/manual/
  */
 public class ConnectorConnection implements ContextHandler {
 
@@ -42,14 +42,11 @@ public class ConnectorConnection implements ContextHandler {
     /*
      * Set the configuration for the Open Telemetry library
      */
-    private ConnectorConnection(String instrumentationName, String instrumentationVersion,
-            ConfigurationParameters configurationParameters) {
-        log.debug("Initialize Open Telemetry library {}:{}", instrumentationName, instrumentationVersion);
+    private ConnectorConnection(ConfigurationParameters configurationParameters) {
+        final Map<String, String> configMap = new HashMap<>();
 
         AutoConfiguredOpenTelemetrySdkBuilder builder = AutoConfiguredOpenTelemetrySdk.builder();
         if (configurationParameters != null) {
-
-            final Map<String, String> configMap = new HashMap<>();
 
             // Disable the metrics, this data is not implemented in Jaeger
             configMap.put(Constants.OTEL_METRICS_EXPORTER, Constants.NONE);
@@ -75,8 +72,10 @@ public class ConnectorConnection implements ContextHandler {
             }
 
             builder.addPropertiesSupplier(() -> Collections.unmodifiableMap(configMap));
-            log.debug("Configure Open Telemetry with following parameters: {}", configMap);
+            log.debug("Configuration: {}", configMap);
         }
+        log.debug("Initializing Open Telemetry");
+
         builder.setServiceClassLoader(AutoConfiguredOpenTelemetrySdkBuilder.class.getClassLoader());
         openTelemetry = builder.build().getOpenTelemetrySdk();
         tracer = openTelemetry.getTracer(Constants.LIBRARY_NAME, Constants.LIBRARY_VERSION);
@@ -89,8 +88,7 @@ public class ConnectorConnection implements ContextHandler {
 
     public static synchronized ConnectorConnection getInstance(ConfigurationParameters configurationParameters) {
         if (connectorConnection == null) {
-            connectorConnection = new ConnectorConnection(Constants.LIBRARY_NAME, Constants.LIBRARY_VERSION,
-                    configurationParameters);
+            connectorConnection = new ConnectorConnection(configurationParameters);
         }
         return connectorConnection;
     }
@@ -127,7 +125,7 @@ public class ConnectorConnection implements ContextHandler {
     public void invalidate() {
     }
 
-    public static enum HashMapTextMapSetter implements TextMapSetter<Map<String, String>> {
+    public enum HashMapTextMapSetter implements TextMapSetter<Map<String, String>> {
         INSTANCE;
 
         @Override

@@ -3,7 +3,6 @@ package com.mulesoft.ot;
 import com.mulesoft.ot.listeners.ProcessorListener;
 import com.mulesoft.ot.listeners.FlowListener;
 import com.mulesoft.ot.processor.MuleNotificationProcessor;
-import org.mule.runtime.api.exception.MuleException;
 import org.mule.runtime.api.lifecycle.Startable;
 import org.mule.runtime.api.notification.NotificationListenerRegistry;
 import org.mule.runtime.extension.api.annotation.Configuration;
@@ -41,15 +40,11 @@ public class ConnectorConfiguration implements Startable {
     MuleNotificationProcessor muleNotificationProcessor;
 
     @Override
-    public void start() throws MuleException {
-        log.debug("Initialize ConnectorConfiguration");
+    public void start() {
+        log.debug("OpenTelemetry Connector Initialization, registering listeners and configuration");
         muleNotificationProcessor
                 .init(() -> ConnectorConnection.getInstance(new ConfigurationParameters(getServiceAttributes())));
-
-        log.debug("Register ProcessorListener");
         notificationListenerRegistry.registerListener(new ProcessorListener(muleNotificationProcessor));
-
-        log.debug("Register PipelineListener");
         notificationListenerRegistry.registerListener(new FlowListener(muleNotificationProcessor));
     }
 }

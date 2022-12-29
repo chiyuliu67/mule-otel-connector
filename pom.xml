@@ -6,7 +6,7 @@
     <artifactId>mule-otel-connector</artifactId>
 
     <!--A change in version should be reflected in Constants.java (LIBRARY_VERSION) -->
-    <version>1.0.34</version>
+    <version>1.0.40</version>
     <packaging>mule-extension</packaging>
 
     <parent>
@@ -43,7 +43,7 @@
         -->
         <opentelemetry.version>1.19.0</opentelemetry.version>
         <opentelemetry.otlp.httptrace.version>1.14.0</opentelemetry.otlp.httptrace.version>
-
+        <opentelemetry.sdk.extension.resources.version>1.19.0</opentelemetry.sdk.extension.resources.version>
     </properties>
 
     <developers>
@@ -187,7 +187,7 @@
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-sdk-extension-resources</artifactId>
-            <version>${opentelemetry.version}</version>
+            <version>${opentelemetry.sdk.extension.resources.version}</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>

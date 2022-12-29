@@ -12,6 +12,7 @@ public class ProcessorListener implements MessageProcessorNotificationListener<M
     private final Logger log = LoggerFactory.getLogger(ProcessorListener.class);
 
     public ProcessorListener(MuleNotificationProcessor muleNotificationProcessor) {
+        log.debug("ProcessorListener registered");
         this.muleNotificationProcessor = muleNotificationProcessor;
     }
 

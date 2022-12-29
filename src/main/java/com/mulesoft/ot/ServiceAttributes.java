@@ -13,7 +13,7 @@ import org.mule.runtime.extension.api.annotation.param.display.Summary;
 public class ServiceAttributes {
 
     @Parameter
-    @Summary("Service name for this application.")
+    @Summary("Service name for this application")
     @Expression(ExpressionSupport.NOT_SUPPORTED)
     private String serviceName;
 

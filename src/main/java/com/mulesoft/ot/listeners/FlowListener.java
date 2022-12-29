@@ -12,6 +12,7 @@ public class FlowListener implements PipelineMessageNotificationListener<Pipelin
     private final Logger log = LoggerFactory.getLogger(FlowListener.class);
 
     public FlowListener(MuleNotificationProcessor muleNotificationProcessor) {
+        log.debug("FlowListener registered");
         this.muleNotificationProcessor = muleNotificationProcessor;
     }
 
