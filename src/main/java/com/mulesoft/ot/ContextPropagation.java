@@ -6,7 +6,10 @@ import io.opentelemetry.context.propagation.TextMapSetter;
 
 /*
  * Operations to retrieve or inject the Trace Context
+ *
  * github.com/open-telemetry/opentelemetry-java/blob/main/context/src/main/java/io/opentelemetry/context/Context.java
+ * github.com/open-telemetry/opentelemetry-java/blob/main/context/src/main/java/io/opentelemetry/context/propagation/TextMapGetter.java
+ * github.com/open-telemetry/opentelemetry-java/blob/main/context/src/main/java/io/opentelemetry/context/propagation/TextMapSetter.java
  */
 public interface ContextPropagation {
 

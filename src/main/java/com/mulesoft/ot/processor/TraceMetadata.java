@@ -13,7 +13,7 @@ public class TraceMetadata {
     private String location;
     private Context context;
     private SpanKind spanKind;
-    private String errorMessage;
+    String errorMessage;
     private Map<String, String> tags;
     private StatusCode statusCode;
 
@@ -79,10 +79,6 @@ public class TraceMetadata {
 
     public String getLocation() {
         return location;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
     }
 
     public StatusCode getStatusCode() {
