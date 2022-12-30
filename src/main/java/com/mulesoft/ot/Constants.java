@@ -5,7 +5,7 @@ public class Constants {
     // **********************************
     // Connector Library version
     // **********************************
-    public static final String LIBRARY_VERSION = "1.0.47";
+    public static final String LIBRARY_VERSION = "1.0.48";
     public static final String LIBRARY_NAME = "mule-otel-connector";
 
     // **********************************
@@ -15,6 +15,12 @@ public class Constants {
     // Variable with OpenTelemetry data that can be used to forward it to other
     // services
     public static final String VARIABLE_TRACE_DATA = "openTelemetryTrace";
+
+    // Variable inside of VARIABLE_TRACE_DATA
+    public static final String TRACE_ID = "id";
+
+    // Variable inside of VARIABLE_TRACE_DATA
+    public static final String TRACE_CORRELATION_ID = "correlationId";
 
     // Using this variable the programmer can add custom tags to the current span
     public static final String VARIABLE_RUNTIME_TAGS = "openTelemetryTags";
@@ -55,7 +61,5 @@ public class Constants {
     // **********************************
     // General
     // **********************************
-    public static final String TRACE_ID = "traceId";
-    public static final String TRACE_TRANSACTION_ID = "TRACE_TRANSACTION_ID";
     public static final String CORRELATION_ID = "correlationId";
 }

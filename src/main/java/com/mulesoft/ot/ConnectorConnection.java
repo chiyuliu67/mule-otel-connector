@@ -90,9 +90,9 @@ public class ConnectorConnection implements ContextPropagation {
     public Map<String, String> getTraceContext(String transactionId) {
         Context transactionContext = getTraceVault().getContext(transactionId);
         Map<String, String> traceContext = new HashMap<>();
-        traceContext.put(Constants.TRACE_TRANSACTION_ID, transactionId);
+        traceContext.put(Constants.TRACE_CORRELATION_ID, transactionId);
         traceContext.put(Constants.TRACE_ID, getTraceVault().getTraceIdForTransaction(transactionId));
-        try (Scope scope = transactionContext.makeCurrent()) {
+        try (Scope ignored = transactionContext.makeCurrent()) {
             set(traceContext, HashMapTextMapSetter.INSTANCE);
         }
         log.debug("Create transaction context: {}", traceContext);
