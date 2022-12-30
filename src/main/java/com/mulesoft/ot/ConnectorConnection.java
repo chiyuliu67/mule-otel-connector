@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * This class represents an extension connection.
+ * Creates the configuration for the OpenTelemetry connector
  *
  * <p>
  * The configuration of the library is based:
@@ -30,7 +30,7 @@ import java.util.Optional;
  * The guide to configure the library for Manual Instrumentation
  * opentelemetry.io/docs/instrumentation/java/manual/
  */
-public class ConnectorConnection implements ContextHandler {
+public class ConnectorConnection implements ContextPropagation {
 
     private final Logger log = LoggerFactory.getLogger(ConnectorConnection.class);
 
@@ -45,15 +45,20 @@ public class ConnectorConnection implements ContextHandler {
     private ConnectorConnection(String serviceName, String additionalTags, String collectorEndpoint) {
         final Map<String, String> configMap = new HashMap<>();
 
-        AutoConfiguredOpenTelemetrySdkBuilder builder = AutoConfiguredOpenTelemetrySdk.builder();
         configMap.put(Constants.OTEL_METRICS_EXPORTER, Constants.NONE);
-        configMap.put(Constants.OTEL_SERVICE_NAME, serviceName);
-        configMap.put(Constants.OTEL_RESOURCE_ATTRIBUTES, additionalTags);
         configMap.put(Constants.OTEL_TRACES_EXPORTER, Constants.OTLP);
-        configMap.put(Constants.OTEL_EXPORTER_OTLP_ENDPOINT, collectorEndpoint);
-        builder.addPropertiesSupplier(() -> Collections.unmodifiableMap(configMap));
-        log.debug("Configuration: {}", configMap);
-        log.debug("Initializing Open Telemetry");
+        if (serviceName != null && !serviceName.trim().isEmpty()) {
+            configMap.put(Constants.OTEL_SERVICE_NAME, serviceName);
+        }
+        if (additionalTags != null && !additionalTags.trim().isEmpty()) {
+            configMap.put(Constants.OTEL_RESOURCE_ATTRIBUTES, additionalTags);
+        }
+        if (collectorEndpoint != null && !collectorEndpoint.trim().isEmpty()) {
+            configMap.put(Constants.OTEL_EXPORTER_OTLP_ENDPOINT, collectorEndpoint);
+        }
+        AutoConfiguredOpenTelemetrySdkBuilder builder = AutoConfiguredOpenTelemetrySdk.builder()
+                .addPropertiesSupplier(() -> Collections.unmodifiableMap(configMap));
+        log.debug("Open Telemetry connector configuration: {}", configMap);
 
         builder.setServiceClassLoader(AutoConfiguredOpenTelemetrySdkBuilder.class.getClassLoader());
         openTelemetry = builder.build().getOpenTelemetrySdk();
@@ -77,7 +82,7 @@ public class ConnectorConnection implements ContextHandler {
         return tracer.spanBuilder(spanName);
     }
 
-    public <T> Context getTraceContext(T carrier, TextMapGetter<T> textMapGetter) {
+    public <T> Context get(T carrier, TextMapGetter<T> textMapGetter) {
         return openTelemetry.getPropagators().getTextMapPropagator().extract(Context.current(), carrier, textMapGetter);
     }
 
@@ -88,21 +93,18 @@ public class ConnectorConnection implements ContextHandler {
         traceContext.put(Constants.TRACE_TRANSACTION_ID, transactionId);
         traceContext.put(Constants.TRACE_ID, getTraceVault().getTraceIdForTransaction(transactionId));
         try (Scope scope = transactionContext.makeCurrent()) {
-            injectTraceContext(traceContext, HashMapTextMapSetter.INSTANCE);
+            set(traceContext, HashMapTextMapSetter.INSTANCE);
         }
         log.debug("Create transaction context: {}", traceContext);
         return Collections.unmodifiableMap(traceContext);
     }
 
-    public <T> void injectTraceContext(T carrier, TextMapSetter<T> textMapSetter) {
+    public <T> void set(T carrier, TextMapSetter<T> textMapSetter) {
         openTelemetry.getPropagators().getTextMapPropagator().inject(Context.current(), carrier, textMapSetter);
     }
 
     public TraceVault getTraceVault() {
         return traceVault;
-    }
-
-    public void invalidate() {
     }
 
     public enum HashMapTextMapSetter implements TextMapSetter<Map<String, String>> {

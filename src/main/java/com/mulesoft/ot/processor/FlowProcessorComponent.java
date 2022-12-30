@@ -1,7 +1,7 @@
 package com.mulesoft.ot.processor;
 
 import com.mulesoft.ot.Constants;
-import com.mulesoft.ot.ContextHandler;
+import com.mulesoft.ot.ContextPropagation;
 import io.opentelemetry.api.trace.SpanKind;
 import org.mule.runtime.api.component.Component;
 import org.mule.runtime.api.component.ComponentIdentifier;
@@ -64,7 +64,7 @@ public class FlowProcessorComponent extends AbstractProcessorComponent {
 
     @Override
     public Optional<TraceMetadata> getSourceStartTraceComponent(EnrichedServerNotification notification,
-            ContextHandler contextHandler) {
+            ContextPropagation contextPropagation) {
         TraceMetadata traceMetadata = getStartTraceComponent(notification);
         traceMetadata.setSpanKind(SpanKind.SERVER);
 
@@ -85,7 +85,7 @@ public class FlowProcessorComponent extends AbstractProcessorComponent {
         ProcessorComponentService.getInstance()
                 .getProcessorComponentFor(sourceIdentifier, configurationComponentLocator)
                 .flatMap(processorComponent -> processorComponent.getSourceStartTraceComponent(notification,
-                        contextHandler))
+                        contextPropagation))
                 .ifPresent(sourceTrace -> {
                     SpanKind sourceKind = sourceTrace.getSpanKind() != null
                             ? sourceTrace.getSpanKind()
@@ -101,7 +101,7 @@ public class FlowProcessorComponent extends AbstractProcessorComponent {
 
     @Override
     public Optional<TraceMetadata> getSourceEndTraceComponent(EnrichedServerNotification notification,
-            ContextHandler contextHandler) {
+            ContextPropagation contextPropagation) {
 
         // Add flow tags to the trace
         TraceMetadata traceMetadata = getTraceComponentEnd(notification);
@@ -130,7 +130,7 @@ public class FlowProcessorComponent extends AbstractProcessorComponent {
         ProcessorComponentService.getInstance()
                 .getProcessorComponentFor(sourceIdentifier, configurationComponentLocator)
                 .flatMap(processorComponent -> processorComponent.getSourceEndTraceComponent(notification,
-                        contextHandler))
+                        contextPropagation))
                 .ifPresent(sourceTrace -> {
                     traceMetadata.getTags().putAll(sourceTrace.getTags());
                     traceMetadata.setStatusCode(sourceTrace.getStatusCode());

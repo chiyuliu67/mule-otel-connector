@@ -1,6 +1,6 @@
 package com.mulesoft.ot.processor;
 
-import com.mulesoft.ot.ContextHandler;
+import com.mulesoft.ot.ContextPropagation;
 import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.location.ConfigurationComponentLocator;
 import org.mule.runtime.api.notification.EnrichedServerNotification;
@@ -39,12 +39,12 @@ public interface ProcessorComponent {
      *
      * @param notification
      *            {@link EnrichedServerNotification}
-     * @param contextHandler
-     *            {@link ContextHandler} to help extract OpenTelemetry context
+     * @param contextPropagation
+     *            {@link ContextPropagation} to help extract OpenTelemetry context
      * @return {@link Optional}
      */
     default Optional<TraceMetadata> getSourceStartTraceComponent(EnrichedServerNotification notification,
-            ContextHandler contextHandler) {
+            ContextPropagation contextPropagation) {
         return Optional.empty();
     }
 
@@ -53,11 +53,11 @@ public interface ProcessorComponent {
      * to build source specific traces.
      *
      * @param notification
-     * @param contextHandler
+     * @param contextPropagation
      * @return Optional trace component
      */
     default Optional<TraceMetadata> getSourceEndTraceComponent(EnrichedServerNotification notification,
-            ContextHandler contextHandler) {
+            ContextPropagation contextPropagation) {
         return Optional.empty();
     }
 }

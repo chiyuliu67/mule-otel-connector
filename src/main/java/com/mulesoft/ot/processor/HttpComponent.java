@@ -1,7 +1,7 @@
 package com.mulesoft.ot.processor;
 
 import com.mulesoft.ot.Constants;
-import com.mulesoft.ot.ContextHandler;
+import com.mulesoft.ot.ContextPropagation;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.context.propagation.TextMapGetter;
@@ -109,7 +109,7 @@ public class HttpComponent extends AbstractProcessorComponent {
 
     @Override
     public Optional<TraceMetadata> getSourceStartTraceComponent(EnrichedServerNotification notification,
-            ContextHandler contextHandler) {
+            ContextPropagation contextPropagation) {
         if (!isListenerFlowEvent(notification)) {
             return Optional.empty();
         }
@@ -121,13 +121,13 @@ public class HttpComponent extends AbstractProcessorComponent {
         traceMetadata.setTags(tags);
         traceMetadata.setCorrelationId(getTransactionId(notification));
         traceMetadata.setSpanName(attributes.getListenerPath());
-        traceMetadata.setContext(contextHandler.getTraceContext(attributes.getHeaders(), ContextMapGetter.INSTANCE));
+        traceMetadata.setContext(contextPropagation.get(attributes.getHeaders(), ContextMapGetter.INSTANCE));
         return Optional.of(traceMetadata);
     }
 
     @Override
     public Optional<TraceMetadata> getSourceEndTraceComponent(EnrichedServerNotification notification,
-            ContextHandler contextHandler) {
+            ContextPropagation contextPropagation) {
         TypedValue<?> httpStatus = notification.getEvent().getVariables().get("httpStatus");
         if (httpStatus != null) {
             String statusCode = TypedValue.unwrap(httpStatus).toString();

@@ -57,7 +57,6 @@ public class ConnectorConfiguration implements Startable {
         muleNotificationProcessor
                 .init(() -> ConnectorConnection.getInstance(serviceName, additionalTags, collectorEndpoint));
 
-
         notificationListenerRegistry.registerListener(new ProcessorListener(muleNotificationProcessor));
         notificationListenerRegistry.registerListener(new FlowListener(muleNotificationProcessor));
     }
