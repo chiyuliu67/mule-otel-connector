@@ -24,9 +24,6 @@ public class FlowListener implements PipelineMessageNotificationListener<Pipelin
                 case PipelineMessageNotification.PROCESS_START :
                     actionName = "Start";
                     break;
-                case PipelineMessageNotification.PROCESS_END :
-                    actionName = "End";
-                    break;
                 case PipelineMessageNotification.PROCESS_COMPLETE :
                     actionName = "Complete";
                     break;
@@ -36,8 +33,6 @@ public class FlowListener implements PipelineMessageNotificationListener<Pipelin
         switch (Integer.parseInt(notification.getAction().getIdentifier())) {
             case PipelineMessageNotification.PROCESS_START :
                 muleNotificationProcessor.handleFlowStartEvent(notification);
-                break;
-            case PipelineMessageNotification.PROCESS_END :
                 break;
             case PipelineMessageNotification.PROCESS_COMPLETE :
                 muleNotificationProcessor.handleFlowEndEvent(notification);
