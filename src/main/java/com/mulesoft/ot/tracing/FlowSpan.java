@@ -3,6 +3,9 @@ package com.mulesoft.ot.tracing;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.context.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Map;
@@ -10,6 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class FlowSpan implements Serializable {
+
+    private static final Logger log = LoggerFactory.getLogger(FlowSpan.class);
+
     private final String flowName;
     private final Span span;
     private boolean ending = false;
@@ -28,9 +34,10 @@ public class FlowSpan implements Serializable {
     public Span addProcessorSpan(String location, SpanBuilder spanBuilder) {
         if (ending || ended)
             throw new UnsupportedOperationException(
-                    "Flow: " + flowName + ", span " + (ended ? "has ended" : "is ending"));
+                    "Flow: " + flowName + ", span: " + (ended ? "has ended" : "is ending"));
         Span span = spanBuilder.setParent(Context.current().with(getSpan())).startSpan();
         childSpans.put(location, span);
+        log.debug("Add span: {}", span.getSpanContext().getSpanId());
         return span;
     }
 
