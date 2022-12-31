@@ -48,53 +48,43 @@ public class MuleNotificationProcessor {
     }
 
     public void handleProcessorStartEvent(MessageProcessorNotification notification) {
-        try {
-            getProcessorComponent(notification).ifPresent(processor -> {
-                log.debug("Processor: {}:{} start event", notification.getResourceIdentifier(),
-                        notification.getComponent().getIdentifier());
-                init();
-                TraceMetadata traceMetadata = processor.getStartTraceComponent(notification);
-                SpanBuilder spanBuilder = openTelemetryConnection.spanBuilder(traceMetadata.getSpanName())
-                        .setSpanKind(traceMetadata.getSpanKind())
-                        .setStartTimestamp(Instant.ofEpochMilli(notification.getTimestamp()));
-                traceMetadata.getTags().forEach(spanBuilder::setAttribute);
-                openTelemetryConnection.getTraceVault().startSpan(traceMetadata.getCorrelationId(),
-                        traceMetadata.getLocation(), spanBuilder);
-            });
-
-        } catch (Exception ex) {
-            log.error("Error in handling processor start event", ex);
-            throw ex;
-        }
+        getProcessorComponent(notification).ifPresent(processor -> {
+            log.debug("Processor: {}:{} start event", notification.getResourceIdentifier(),
+                    notification.getComponent().getIdentifier());
+            init();
+            TraceMetadata traceMetadata = processor.getStartTraceComponent(notification);
+            SpanBuilder spanBuilder = openTelemetryConnection.spanBuilder(traceMetadata.getSpanName())
+                    .setSpanKind(traceMetadata.getSpanKind())
+                    .setStartTimestamp(Instant.ofEpochMilli(notification.getTimestamp()));
+            traceMetadata.getTags().forEach(spanBuilder::setAttribute);
+            openTelemetryConnection.getTraceVault().startSpan(traceMetadata.getCorrelationId(),
+                    traceMetadata.getLocation(), spanBuilder);
+        });
     }
+
+    public void handleProcessorEndEvent(MessageProcessorNotification notification) {
+        getProcessorComponent(notification).ifPresent(processorComponent -> {
+            log.debug("Processor: {}:{}, end event ", notification.getResourceIdentifier(),
+                    notification.getComponent().getIdentifier());
+            init();
+            TraceMetadata traceMetadata = processorComponent.getEndTraceComponent(notification);
+            openTelemetryConnection.getTraceVault().endSpan(traceMetadata.getCorrelationId(),
+                    traceMetadata.getLocation(), span -> {
+                        if (notification.getEvent().getError().isPresent()) {
+                            Error error = notification.getEvent().getError().get();
+                            span.recordException(error.getCause());
+                        }
+                        setSpanStatus(traceMetadata, span);
+                        if (traceMetadata.getTags() != null)
+                            traceMetadata.getTags().forEach(span::setAttribute);
+                    }, Instant.ofEpochMilli(notification.getTimestamp()));
+        });
+    }
+
 
     private Optional<ProcessorComponent> getProcessorComponent(MessageProcessorNotification notification) {
         return processorComponentService.getProcessorComponentFor(notification.getComponent().getIdentifier(),
                 configurationComponentLocator);
-    }
-
-    public void handleProcessorEndEvent(MessageProcessorNotification notification) {
-        try {
-            getProcessorComponent(notification).ifPresent(processorComponent -> {
-                log.debug("Processor: {}:{}, end event ", notification.getResourceIdentifier(),
-                        notification.getComponent().getIdentifier());
-                init();
-                TraceMetadata traceMetadata = processorComponent.getEndTraceComponent(notification);
-                openTelemetryConnection.getTraceVault().endSpan(traceMetadata.getCorrelationId(),
-                        traceMetadata.getLocation(), span -> {
-                            if (notification.getEvent().getError().isPresent()) {
-                                Error error = notification.getEvent().getError().get();
-                                span.recordException(error.getCause());
-                            }
-                            setSpanStatus(traceMetadata, span);
-                            if (traceMetadata.getTags() != null)
-                                traceMetadata.getTags().forEach(span::setAttribute);
-                        }, Instant.ofEpochMilli(notification.getTimestamp()));
-            });
-        } catch (Exception ex) {
-            log.error("Error in processor end event", ex);
-            throw ex;
-        }
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")

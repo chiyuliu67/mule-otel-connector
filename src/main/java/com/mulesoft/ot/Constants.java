@@ -5,7 +5,7 @@ public class Constants {
     // **********************************
     // Connector Library version
     // **********************************
-    public static final String LIBRARY_VERSION = "1.0.56";
+    public static final String LIBRARY_VERSION = "1.0.58";
     public static final String LIBRARY_NAME = "mule-otel-connector";
 
     // **********************************
@@ -29,7 +29,6 @@ public class Constants {
     // Namespaces
     // **********************************
     public static final String NAMESPACE_MULE = "mule";
-    public static final String NAMESPACE_DATABASE = "db";
     public static final String FLOW_EVENT = "flow";
     public static final String HTTP_NAMESPACE = "http";
 

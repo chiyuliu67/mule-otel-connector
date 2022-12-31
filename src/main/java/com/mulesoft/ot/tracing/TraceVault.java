@@ -33,7 +33,7 @@ public class TraceVault {
             log.debug("Start transaction: {}, flow: {}, spanId {}, traceId {}", transactionId, rootFlowName,
                     span.getSpanContext().getSpanId(), span.getSpanContext().getTraceId());
             transactionMap.put(transactionId,
-                    new Trace(span.getSpanContext().getTraceId(), rootFlowName, new FlowSpan(rootFlowName, span)));
+                    new Trace(span.getSpanContext().getTraceId(), rootFlowName, new SpanManager(rootFlowName, span)));
         }
     }
 
@@ -71,7 +71,7 @@ public class TraceVault {
     }
 
     public Context getContext(String transactionId) {
-        return getTransaction(transactionId).map(Trace::getRootFlowSpan).map(FlowSpan::getSpan)
+        return getTransaction(transactionId).map(Trace::getRootFlowSpan).map(SpanManager::getSpan)
                 .map(s -> s.storeInContext(Context.current())).orElse(Context.current());
     }
 

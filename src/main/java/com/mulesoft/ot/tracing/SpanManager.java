@@ -12,9 +12,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-public class FlowSpan implements Serializable {
+public class SpanManager implements Serializable {
 
-    private static final Logger log = LoggerFactory.getLogger(FlowSpan.class);
+    private static final Logger log = LoggerFactory.getLogger(SpanManager.class);
 
     private final String flowName;
     private final Span span;
@@ -22,7 +22,7 @@ public class FlowSpan implements Serializable {
     private final Map<String, Span> childSpans = new ConcurrentHashMap<>();
     private boolean ended = false;
 
-    public FlowSpan(String flowName, Span span) {
+    public SpanManager(String flowName, Span span) {
         this.flowName = flowName;
         this.span = span;
     }
@@ -34,7 +34,7 @@ public class FlowSpan implements Serializable {
     public Span addProcessorSpan(String location, SpanBuilder spanBuilder) {
         if (ending || ended)
             throw new UnsupportedOperationException(
-                    "Flow: " + flowName + ", span: " + (ended ? "has ended" : "is ending"));
+                    "Flow: " + flowName + ", span: " + (ended ? ", end" : "is finishing"));
         Span span = spanBuilder.setParent(Context.current().with(getSpan())).startSpan();
         childSpans.put(location, span);
         log.debug("Add span: {}", span.getSpanContext().getSpanId());
@@ -44,10 +44,10 @@ public class FlowSpan implements Serializable {
     public void endProcessorSpan(String location, Consumer<Span> spanUpdater, Instant endTime) {
         if ((!ending || ended) && childSpans.containsKey(location)) {
             Span removed = childSpans.remove(location);
-            if (spanUpdater != null){
+            if (spanUpdater != null) {
                 spanUpdater.accept(removed);
             }
-            log.debug("Removed span: {}", span.getSpanContext().getSpanId());
+            log.debug("Removed span: {}, location: {}", removed.getSpanContext().getSpanId(), location);
             removed.end(endTime);
         }
     }

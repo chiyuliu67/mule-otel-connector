@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public class Trace implements Serializable {
     private final String rootFlowName;
-    private final FlowSpan rootFlowSpan;
+    private final SpanManager rootFlowSpan;
     private final String traceId;
 
-    public Trace(String traceId, String rootFlowName, FlowSpan rootFlowSpan) {
+    public Trace(String traceId, String rootFlowName, SpanManager rootFlowSpan) {
         this.rootFlowName = rootFlowName;
         this.rootFlowSpan = rootFlowSpan;
         this.traceId = traceId;
@@ -17,7 +17,7 @@ public class Trace implements Serializable {
         return rootFlowName;
     }
 
-    public FlowSpan getRootFlowSpan() {
+    public SpanManager getRootFlowSpan() {
         return rootFlowSpan;
     }
 
