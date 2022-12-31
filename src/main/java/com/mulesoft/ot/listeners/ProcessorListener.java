@@ -18,8 +18,19 @@ public class ProcessorListener implements MessageProcessorNotificationListener<M
 
     @Override
     public void onNotification(MessageProcessorNotification notification) {
-        log.debug("ProcessorListener Resource:" + notification.getResourceIdentifier() + " Action:"
-                + notification.getActionName());
+        if (log.isDebugEnabled()) {
+            String actionName = "Other type";
+            switch (Integer.parseInt(notification.getAction().getIdentifier())) {
+                case MessageProcessorNotification.MESSAGE_PROCESSOR_PRE_INVOKE :
+                    actionName = "Pre invoke";
+                    break;
+
+                case MessageProcessorNotification.MESSAGE_PROCESSOR_POST_INVOKE :
+                    actionName = "Post invoke";
+                    break;
+            }
+            log.debug("Resource: {}, Action: {}", notification.getResourceIdentifier(), actionName);
+        }
 
         switch (Integer.parseInt(notification.getAction().getIdentifier())) {
             case MessageProcessorNotification.MESSAGE_PROCESSOR_PRE_INVOKE :

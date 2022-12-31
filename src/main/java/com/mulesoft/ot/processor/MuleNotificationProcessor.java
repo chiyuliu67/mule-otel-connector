@@ -50,7 +50,7 @@ public class MuleNotificationProcessor {
     public void handleProcessorStartEvent(MessageProcessorNotification notification) {
         try {
             getProcessorComponent(notification).ifPresent(processor -> {
-                log.trace("Handling '{}:{}' processor start event", notification.getResourceIdentifier(),
+                log.debug("Processor: {}:{} start event", notification.getResourceIdentifier(),
                         notification.getComponent().getIdentifier());
                 init();
                 TraceMetadata traceMetadata = processor.getStartTraceComponent(notification);
@@ -69,14 +69,14 @@ public class MuleNotificationProcessor {
     }
 
     private Optional<ProcessorComponent> getProcessorComponent(MessageProcessorNotification notification) {
-        return processorComponentService
-                .getProcessorComponentFor(notification.getComponent().getIdentifier(), configurationComponentLocator);
+        return processorComponentService.getProcessorComponentFor(notification.getComponent().getIdentifier(),
+                configurationComponentLocator);
     }
 
     public void handleProcessorEndEvent(MessageProcessorNotification notification) {
         try {
             getProcessorComponent(notification).ifPresent(processorComponent -> {
-                log.trace("Handling '{}:{}' processor end event ", notification.getResourceIdentifier(),
+                log.debug("Processor: {}:{}, end event ", notification.getResourceIdentifier(),
                         notification.getComponent().getIdentifier());
                 init();
                 TraceMetadata traceMetadata = processorComponent.getEndTraceComponent(notification);
@@ -92,14 +92,15 @@ public class MuleNotificationProcessor {
                         }, Instant.ofEpochMilli(notification.getTimestamp()));
             });
         } catch (Exception ex) {
-            log.error("Error in handling processor end event", ex);
+            log.error("Error in processor end event", ex);
             throw ex;
         }
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public void handleFlowStartEvent(PipelineMessageNotification notification) {
         try {
-            log.trace("Handling '{}' flow start event", notification.getResourceIdentifier());
+            log.debug("Resource: {}, flow start", notification.getResourceIdentifier());
             init();
             ProcessorComponent flowProcessorComponent = new FlowProcessorComponent()
                     .withConfigurationComponentLocator(configurationComponentLocator);
@@ -112,14 +113,15 @@ public class MuleNotificationProcessor {
             openTelemetryConnection.getTraceVault().start(traceMetadata.getCorrelationId(), traceMetadata.getName(),
                     spanBuilder);
         } catch (Exception ex) {
-            log.error("Error in handling " + notification.getResourceIdentifier() + " flow start event", ex);
+            log.error("Error resource: " + notification.getResourceIdentifier() + " flow start", ex);
             throw ex;
         }
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public void handleFlowEndEvent(PipelineMessageNotification notification) {
         try {
-            log.trace("Handling '{}' flow end event", notification.getResourceIdentifier());
+            log.debug("Resource: {}, flow end", notification.getResourceIdentifier());
             init();
             ProcessorComponent flowProcessorComponent = new FlowProcessorComponent()
                     .withConfigurationComponentLocator(configurationComponentLocator);
@@ -136,7 +138,7 @@ public class MuleNotificationProcessor {
                         }
                     }, Instant.ofEpochMilli(notification.getTimestamp()));
         } catch (Exception ex) {
-            log.error("Error in handling " + notification.getResourceIdentifier() + " flow end event", ex);
+            log.error("Error resource: " + notification.getResourceIdentifier() + " flow end", ex);
             throw ex;
         }
     }

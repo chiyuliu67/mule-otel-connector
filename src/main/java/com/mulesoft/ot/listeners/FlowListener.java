@@ -18,8 +18,21 @@ public class FlowListener implements PipelineMessageNotificationListener<Pipelin
 
     @Override
     public void onNotification(PipelineMessageNotification notification) {
-        log.debug("Flow: " + notification.getResourceIdentifier() + ", Action: " + notification.getActionName());
-
+        if (log.isDebugEnabled()) {
+            String actionName = "Other type";
+            switch (Integer.parseInt(notification.getAction().getIdentifier())) {
+                case PipelineMessageNotification.PROCESS_START :
+                    actionName = "Start";
+                    break;
+                case PipelineMessageNotification.PROCESS_END :
+                    actionName = "End";
+                    break;
+                case PipelineMessageNotification.PROCESS_COMPLETE :
+                    actionName = "Complete";
+                    break;
+            }
+            log.debug("Flow: {}, Action: {}", notification.getResourceIdentifier(), actionName);
+        }
         switch (Integer.parseInt(notification.getAction().getIdentifier())) {
             case PipelineMessageNotification.PROCESS_START :
                 muleNotificationProcessor.handleFlowStartEvent(notification);
