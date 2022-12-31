@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -34,7 +35,7 @@
         <munit.extensions.maven.plugin.version>1.1.2</munit.extensions.maven.plugin.version>
         <munit.version>2.3.8</munit.version> 
 
-        <!--Spotless, Java Code Formater -->
+        <!--Spotless, Java Code Formatter -->
         <spotless.version>2.19.0</spotless.version>
 
         <!--OpenTelemetry SDK, Update if possible both properties with the same version
