@@ -10,11 +10,8 @@ import org.mule.runtime.api.component.location.ConfigurationComponentLocator;
 import org.mule.runtime.api.message.Error;
 import org.mule.runtime.api.metadata.TypedValue;
 import org.mule.runtime.api.notification.EnrichedServerNotification;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractProcessorComponent implements ProcessorComponent {
-    private final Logger log = LoggerFactory.getLogger(AbstractProcessorComponent.class);
 
     protected ConfigurationComponentLocator configurationComponentLocator;
 
@@ -130,7 +127,6 @@ public abstract class AbstractProcessorComponent implements ProcessorComponent {
         traceMetadata.setTags(tags);
         traceMetadata.setSpanKind(getSpanKind());
         traceMetadata.setCorrelationId(getTransactionId(notification));
-        log.trace("Span name {}", spanName);
         return traceMetadata;
     }
 

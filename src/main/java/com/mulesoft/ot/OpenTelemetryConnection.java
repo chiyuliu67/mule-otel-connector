@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Creates the configuration for the OpenTelemetry connector
+ * Creates the connection for the OpenTelemetry connector
  *
  * <p>
  * The configuration of the library is based:
@@ -30,19 +30,18 @@ import java.util.Optional;
  * The guide to configure the library for Manual Instrumentation
  * opentelemetry.io/docs/instrumentation/java/manual/
  */
-public class ConnectorConnection implements ContextPropagation {
+public class OpenTelemetryConnection implements ContextPropagation {
 
-    private final Logger log = LoggerFactory.getLogger(ConnectorConnection.class);
-
+    private final Logger log = LoggerFactory.getLogger(OpenTelemetryConnection.class);
     private final TraceVault traceVault;
-    private static ConnectorConnection connectorConnection;
+    private static OpenTelemetryConnection openTelemetryConnection;
     private final OpenTelemetry openTelemetry;
     private final Tracer tracer;
 
     /*
      * Set the configuration for the Open Telemetry library
      */
-    private ConnectorConnection(String serviceName, String additionalTags, String collectorEndpoint) {
+    private OpenTelemetryConnection(String serviceName, String additionalTags, String collectorEndpoint) {
         final Map<String, String> configMap = new HashMap<>();
 
         configMap.put(Constants.OTEL_METRICS_EXPORTER, Constants.NONE);
@@ -66,16 +65,16 @@ public class ConnectorConnection implements ContextPropagation {
         traceVault = TraceVault.getInstance();
     }
 
-    public static Optional<ConnectorConnection> get() {
-        return Optional.ofNullable(connectorConnection);
+    public static Optional<OpenTelemetryConnection> get() {
+        return Optional.ofNullable(openTelemetryConnection);
     }
 
-    public static synchronized ConnectorConnection getInstance(String serviceName, String additionalTags,
+    public static synchronized OpenTelemetryConnection getInstance(String serviceName, String additionalTags,
             String collectorEndpoint) {
-        if (connectorConnection == null) {
-            connectorConnection = new ConnectorConnection(serviceName, additionalTags, collectorEndpoint);
+        if (openTelemetryConnection == null) {
+            openTelemetryConnection = new OpenTelemetryConnection(serviceName, additionalTags, collectorEndpoint);
         }
-        return connectorConnection;
+        return openTelemetryConnection;
     }
 
     public SpanBuilder spanBuilder(String spanName) {

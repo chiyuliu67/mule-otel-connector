@@ -6,7 +6,6 @@ import io.opentelemetry.context.Context;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -29,7 +28,7 @@ public class FlowSpan implements Serializable {
     public Span addProcessorSpan(String location, SpanBuilder spanBuilder) {
         if (ending || ended)
             throw new UnsupportedOperationException(
-                    "Flow " + flowName + " span " + (ended ? "has ended." : "is ending."));
+                    "Flow: " + flowName + ", span " + (ended ? "has ended" : "is ending"));
         Span span = spanBuilder.setParent(Context.current().with(getSpan())).startSpan();
         childSpans.put(location, span);
         return span;
@@ -49,9 +48,5 @@ public class FlowSpan implements Serializable {
         childSpans.forEach((location, span) -> span.end(endTime));
         span.end(endTime);
         ended = true;
-    }
-
-    public Optional<Span> findSpan(String location) {
-        return Optional.ofNullable(childSpans.get(location));
     }
 }

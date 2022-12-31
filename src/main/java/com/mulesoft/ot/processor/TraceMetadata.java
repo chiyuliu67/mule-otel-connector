@@ -7,15 +7,15 @@ import java.util.Map;
 
 public class TraceMetadata {
 
-    private String correlationId;
-    private String name;
-    private String spanName;
-    private String location;
-    private Context context;
-    private SpanKind spanKind;
+    String correlationId;
+    String name;
+    String spanName;
+    String location;
+    Context context;
+    SpanKind spanKind;
     String errorMessage;
-    private Map<String, String> tags;
-    private StatusCode statusCode;
+    Map<String, String> tags;
+    StatusCode statusCode;
 
     public void setCorrelationId(String correlationId) {
         this.correlationId = correlationId;

@@ -1,6 +1,6 @@
 package com.mulesoft.ot.listeners;
 
-import com.mulesoft.ot.ConnectorConnection;
+import com.mulesoft.ot.OpenTelemetryConnection;
 import com.mulesoft.ot.Constants;
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.interception.InterceptionEvent;
@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 public class EventInterceptor implements org.mule.runtime.api.interception.ProcessorInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(EventInterceptor.class);
-    private final Supplier<Optional<ConnectorConnection>> connectionSupplier = ConnectorConnection::get;
+    private final Supplier<Optional<OpenTelemetryConnection>> connectionSupplier = OpenTelemetryConnection::get;
 
     @Override
     public void before(ComponentLocation location, Map<String, ProcessorParameterValue> parameters,

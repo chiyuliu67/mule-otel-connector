@@ -55,7 +55,7 @@ public class ConnectorConfiguration implements Startable {
         log.debug("OpenTelemetry Connector Initialization, registering listeners and configuration");
 
         muleNotificationProcessor
-                .init(() -> ConnectorConnection.getInstance(serviceName, additionalTags, collectorEndpoint));
+                .init(() -> OpenTelemetryConnection.getInstance(serviceName, additionalTags, collectorEndpoint));
 
         notificationListenerRegistry.registerListener(new ProcessorListener(muleNotificationProcessor));
         notificationListenerRegistry.registerListener(new FlowListener(muleNotificationProcessor));
