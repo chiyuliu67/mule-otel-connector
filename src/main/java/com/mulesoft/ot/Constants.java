@@ -5,7 +5,7 @@ public class Constants {
     // **********************************
     // Connector Library version
     // **********************************
-    public static final String LIBRARY_VERSION = "1.0.55";
+    public static final String LIBRARY_VERSION = "1.0.56";
     public static final String LIBRARY_NAME = "mule-otel-connector";
 
     // **********************************

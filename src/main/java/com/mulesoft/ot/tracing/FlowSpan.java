@@ -44,8 +44,10 @@ public class FlowSpan implements Serializable {
     public void endProcessorSpan(String location, Consumer<Span> spanUpdater, Instant endTime) {
         if ((!ending || ended) && childSpans.containsKey(location)) {
             Span removed = childSpans.remove(location);
-            if (spanUpdater != null)
+            if (spanUpdater != null){
                 spanUpdater.accept(removed);
+            }
+            log.debug("Removed span: {}", span.getSpanContext().getSpanId());
             removed.end(endTime);
         }
     }
