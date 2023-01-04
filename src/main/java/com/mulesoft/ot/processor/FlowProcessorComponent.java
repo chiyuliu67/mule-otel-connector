@@ -1,7 +1,7 @@
 package com.mulesoft.ot.processor;
 
 import com.mulesoft.ot.Constants;
-import com.mulesoft.ot.ContextPropagation;
+import com.mulesoft.ot.tracevault.ContextPropagation;
 import io.opentelemetry.api.trace.SpanKind;
 import org.mule.runtime.api.component.Component;
 import org.mule.runtime.api.component.ComponentIdentifier;

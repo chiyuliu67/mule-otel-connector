@@ -1,4 +1,4 @@
-package com.mulesoft.ot;
+package com.mulesoft.ot.tracevault;
 
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapGetter;

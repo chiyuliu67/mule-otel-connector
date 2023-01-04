@@ -1,4 +1,4 @@
-package com.mulesoft.ot.tracing;
+package com.mulesoft.ot.tracevault;
 
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanBuilder;

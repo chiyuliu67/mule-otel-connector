@@ -1,6 +1,6 @@
 package com.mulesoft.ot.processor;
 
-import com.mulesoft.ot.ContextPropagation;
+import com.mulesoft.ot.tracevault.ContextPropagation;
 import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.location.ConfigurationComponentLocator;
 import org.mule.runtime.api.notification.EnrichedServerNotification;

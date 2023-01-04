@@ -1,7 +1,7 @@
 package com.mulesoft.ot.processor;
 
 import com.mulesoft.ot.ConnectorConfiguration;
-import com.mulesoft.ot.OpenTelemetryConnection;
+import com.mulesoft.ot.tracevault.OtelConnection;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.api.trace.StatusCode;
@@ -25,8 +25,8 @@ public class MuleNotificationProcessor {
 
     private static final Logger log = LoggerFactory.getLogger(MuleNotificationProcessor.class);
 
-    private Supplier<OpenTelemetryConnection> connectionSupplier;
-    private OpenTelemetryConnection openTelemetryConnection;
+    private Supplier<OtelConnection> connectionSupplier;
+    private OtelConnection otelConnection;
 
     @Inject
     ConfigurationComponentLocator configurationComponentLocator;
@@ -36,14 +36,14 @@ public class MuleNotificationProcessor {
     public MuleNotificationProcessor() {
     }
 
-    public void init(Supplier<OpenTelemetryConnection> connectionSupplier) {
+    public void init(Supplier<OtelConnection> connectionSupplier) {
         this.connectionSupplier = connectionSupplier;
         processorComponentService = ProcessorComponentService.getInstance();
     }
 
     private void init() {
-        if (openTelemetryConnection == null) {
-            openTelemetryConnection = connectionSupplier.get();
+        if (otelConnection == null) {
+            otelConnection = connectionSupplier.get();
         }
     }
 
@@ -53,12 +53,12 @@ public class MuleNotificationProcessor {
                     notification.getComponent().getIdentifier());
             init();
             TraceMetadata traceMetadata = processor.getStartTraceComponent(notification);
-            SpanBuilder spanBuilder = openTelemetryConnection.spanBuilder(traceMetadata.getSpanName())
+            SpanBuilder spanBuilder = otelConnection.spanBuilder(traceMetadata.getSpanName())
                     .setSpanKind(traceMetadata.getSpanKind())
                     .setStartTimestamp(Instant.ofEpochMilli(notification.getTimestamp()));
             traceMetadata.getTags().forEach(spanBuilder::setAttribute);
-            openTelemetryConnection.getTraceVault().startSpan(traceMetadata.getCorrelationId(),
-                    traceMetadata.getLocation(), spanBuilder);
+            otelConnection.getTraceVault().startSpan(traceMetadata.getCorrelationId(), traceMetadata.getLocation(),
+                    spanBuilder);
         });
     }
 
@@ -68,8 +68,8 @@ public class MuleNotificationProcessor {
                     notification.getComponent().getIdentifier());
             init();
             TraceMetadata traceMetadata = processorComponent.getEndTraceComponent(notification);
-            openTelemetryConnection.getTraceVault().endSpan(traceMetadata.getCorrelationId(),
-                    traceMetadata.getLocation(), span -> {
+            otelConnection.getTraceVault().endSpan(traceMetadata.getCorrelationId(), traceMetadata.getLocation(),
+                    span -> {
                         if (notification.getEvent().getError().isPresent()) {
                             Error error = notification.getEvent().getError().get();
                             span.recordException(error.getCause());
@@ -80,7 +80,6 @@ public class MuleNotificationProcessor {
                     }, Instant.ofEpochMilli(notification.getTimestamp()));
         });
     }
-
 
     private Optional<ProcessorComponent> getProcessorComponent(MessageProcessorNotification notification) {
         return processorComponentService.getProcessorComponentFor(notification.getComponent().getIdentifier(),
@@ -95,12 +94,12 @@ public class MuleNotificationProcessor {
             ProcessorComponent flowProcessorComponent = new FlowProcessorComponent()
                     .withConfigurationComponentLocator(configurationComponentLocator);
             TraceMetadata traceMetadata = flowProcessorComponent
-                    .getSourceStartTraceComponent(notification, openTelemetryConnection).get();
-            SpanBuilder spanBuilder = openTelemetryConnection.spanBuilder(traceMetadata.getSpanName())
+                    .getSourceStartTraceComponent(notification, otelConnection).get();
+            SpanBuilder spanBuilder = otelConnection.spanBuilder(traceMetadata.getSpanName())
                     .setSpanKind(traceMetadata.getSpanKind()).setParent(traceMetadata.getContext())
                     .setStartTimestamp(Instant.ofEpochMilli(notification.getTimestamp()));
             traceMetadata.getTags().forEach(spanBuilder::setAttribute);
-            openTelemetryConnection.getTraceVault().start(traceMetadata.getCorrelationId(), traceMetadata.getName(),
+            otelConnection.getTraceVault().start(traceMetadata.getCorrelationId(), traceMetadata.getName(),
                     spanBuilder);
         } catch (Exception ex) {
             log.error("Error resource: " + notification.getResourceIdentifier() + " flow start", ex);
@@ -117,16 +116,15 @@ public class MuleNotificationProcessor {
                     .withConfigurationComponentLocator(configurationComponentLocator);
 
             TraceMetadata traceMetadata = flowProcessorComponent
-                    .getSourceEndTraceComponent(notification, openTelemetryConnection).get();
+                    .getSourceEndTraceComponent(notification, otelConnection).get();
 
-            openTelemetryConnection.getTraceVault().end(traceMetadata.getCorrelationId(), traceMetadata.getName(),
-                    rootSpan -> {
-                        traceMetadata.getTags().forEach(rootSpan::setAttribute);
-                        setSpanStatus(traceMetadata, rootSpan);
-                        if (notification.getException() != null) {
-                            rootSpan.recordException(notification.getException());
-                        }
-                    }, Instant.ofEpochMilli(notification.getTimestamp()));
+            otelConnection.getTraceVault().end(traceMetadata.getCorrelationId(), traceMetadata.getName(), rootSpan -> {
+                traceMetadata.getTags().forEach(rootSpan::setAttribute);
+                setSpanStatus(traceMetadata, rootSpan);
+                if (notification.getException() != null) {
+                    rootSpan.recordException(notification.getException());
+                }
+            }, Instant.ofEpochMilli(notification.getTimestamp()));
         } catch (Exception ex) {
             log.error("Error resource: " + notification.getResourceIdentifier() + " flow end", ex);
             throw ex;

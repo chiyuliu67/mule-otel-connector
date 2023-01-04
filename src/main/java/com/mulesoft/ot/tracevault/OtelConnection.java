@@ -1,6 +1,6 @@
-package com.mulesoft.ot;
+package com.mulesoft.ot.tracevault;
 
-import com.mulesoft.ot.tracing.TraceVault;
+import com.mulesoft.ot.Constants;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.SpanBuilder;
 import io.opentelemetry.api.trace.Tracer;
@@ -30,34 +30,34 @@ import java.util.Optional;
  * The guide to configure the library for Manual Instrumentation
  * opentelemetry.io/docs/instrumentation/java/manual/
  */
-public class OpenTelemetryConnection implements ContextPropagation {
+public class OtelConnection implements ContextPropagation {
 
-    private final Logger log = LoggerFactory.getLogger(OpenTelemetryConnection.class);
+    private final Logger log = LoggerFactory.getLogger(OtelConnection.class);
     private final TraceVault traceVault;
-    private static OpenTelemetryConnection openTelemetryConnection;
+    private static OtelConnection otelConnection;
     private final OpenTelemetry openTelemetry;
     private final Tracer tracer;
 
     /*
      * Set the configuration for the Open Telemetry library
      */
-    private OpenTelemetryConnection(String serviceName, String additionalTags, String collectorEndpoint) {
-        final Map<String, String> configMap = new HashMap<>();
+    private OtelConnection(String serviceName, String additionalTags, String collectorEndpoint) {
+        final Map<String, String> configuration = new HashMap<>();
 
-        configMap.put(Constants.OTEL_METRICS_EXPORTER, Constants.NONE);
-        configMap.put(Constants.OTEL_TRACES_EXPORTER, Constants.OTLP);
+        configuration.put(Constants.OTEL_METRICS_EXPORTER, Constants.NONE);
+        configuration.put(Constants.OTEL_TRACES_EXPORTER, Constants.OTLP);
         if (serviceName != null && !serviceName.trim().isEmpty()) {
-            configMap.put(Constants.OTEL_SERVICE_NAME, serviceName);
+            configuration.put(Constants.OTEL_SERVICE_NAME, serviceName);
         }
         if (additionalTags != null && !additionalTags.trim().isEmpty()) {
-            configMap.put(Constants.OTEL_RESOURCE_ATTRIBUTES, additionalTags);
+            configuration.put(Constants.OTEL_RESOURCE_ATTRIBUTES, additionalTags);
         }
         if (collectorEndpoint != null && !collectorEndpoint.trim().isEmpty()) {
-            configMap.put(Constants.OTEL_EXPORTER_OTLP_ENDPOINT, collectorEndpoint);
+            configuration.put(Constants.OTEL_EXPORTER_OTLP_ENDPOINT, collectorEndpoint);
         }
         AutoConfiguredOpenTelemetrySdkBuilder builder = AutoConfiguredOpenTelemetrySdk.builder()
-                .addPropertiesSupplier(() -> Collections.unmodifiableMap(configMap));
-        log.debug("Open Telemetry connector configuration: {}", configMap);
+                .addPropertiesSupplier(() -> Collections.unmodifiableMap(configuration));
+        log.debug("Open Telemetry connector configuration: {}", configuration);
 
         builder.setServiceClassLoader(AutoConfiguredOpenTelemetrySdkBuilder.class.getClassLoader());
         openTelemetry = builder.build().getOpenTelemetrySdk();
@@ -65,16 +65,16 @@ public class OpenTelemetryConnection implements ContextPropagation {
         traceVault = TraceVault.getInstance();
     }
 
-    public static Optional<OpenTelemetryConnection> get() {
-        return Optional.ofNullable(openTelemetryConnection);
+    public static Optional<OtelConnection> get() {
+        return Optional.ofNullable(otelConnection);
     }
 
-    public static synchronized OpenTelemetryConnection getInstance(String serviceName, String additionalTags,
+    public static synchronized OtelConnection getInstance(String serviceName, String additionalTags,
             String collectorEndpoint) {
-        if (openTelemetryConnection == null) {
-            openTelemetryConnection = new OpenTelemetryConnection(serviceName, additionalTags, collectorEndpoint);
+        if (otelConnection == null) {
+            otelConnection = new OtelConnection(serviceName, additionalTags, collectorEndpoint);
         }
-        return openTelemetryConnection;
+        return otelConnection;
     }
 
     public SpanBuilder spanBuilder(String spanName) {
@@ -94,7 +94,7 @@ public class OpenTelemetryConnection implements ContextPropagation {
         try (Scope ignored = transactionContext.makeCurrent()) {
             set(traceContext, HashMapTextMapSetter.INSTANCE);
         }
-        log.debug("Create transaction context: {}", traceContext);
+        log.debug("Create a transaction context: {}", traceContext);
         return Collections.unmodifiableMap(traceContext);
     }
 
