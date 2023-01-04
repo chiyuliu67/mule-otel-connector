@@ -129,10 +129,4 @@ public abstract class AbstractProcessorComponent implements ProcessorComponent {
         traceMetadata.setCorrelationId(getTransactionId(notification));
         return traceMetadata;
     }
-
-    protected void addTagIfPresent(Map<String, String> sourceMap, String sourceKey, Map<String, String> targetMap,
-            String targetKey) {
-        if (sourceMap.containsKey(sourceKey))
-            targetMap.put(targetKey, sourceMap.get(sourceKey));
-    }
 }

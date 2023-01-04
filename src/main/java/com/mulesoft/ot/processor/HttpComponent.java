@@ -54,23 +54,23 @@ public class HttpComponent extends AbstractProcessorComponent {
     public TraceMetadata getEndTraceComponent(EnrichedServerNotification notification) {
         TraceMetadata endTraceMetadata = super.getEndTraceComponent(notification);
 
-        // When error is thrown by http:request, the response msg will be on error obj
+        // If error in http:request, then the responseMessage will be on error obj
         Message responseMessage = notification.getEvent().getError().map(Error::getErrorMessage)
                 .orElse(notification.getEvent().getMessage());
         TypedValue<HttpResponseAttributes> responseAttributes = responseMessage.getAttributes();
 
-        if (responseAttributes.getValue() == null
-                || !(responseAttributes.getValue() instanceof HttpResponseAttributes)) {
+        if (responseAttributes.getValue() == null) {
+            log.debug("responseAttributes are null due to an error in http:request");
             return endTraceMetadata;
         }
 
-        // If request generate error, then error message includes the HTTP Response
-        // attributes.
+        log.debug("Response headers from http: {}", responseAttributes.getValue());
         HttpResponseAttributes attributes = responseAttributes.getValue();
         Map<String, String> tags = new HashMap<>();
         tags.put(HTTP_STATUS_CODE.getKey(), Integer.toString(attributes.getStatusCode()));
-        endTraceMetadata.setStatusCode(getSpanStatus(false, attributes.getStatusCode()));
         tags.put(HTTP_RESPONSE_CONTENT_LENGTH.getKey(), attributes.getHeaders().get("content-length"));
+        endTraceMetadata.setStatusCode(getSpanStatus(false, attributes.getStatusCode()));
+
         if (endTraceMetadata.getTags() != null) {
             tags.putAll(endTraceMetadata.getTags());
         }
@@ -173,7 +173,7 @@ public class HttpComponent extends AbstractProcessorComponent {
         Map<String, String> connectionParameters = componentWrapper.getConfigConnectionParameters();
         if (!connectionParameters.isEmpty()) {
             tags.put(HTTP_SCHEME.getKey(), connectionParameters.getOrDefault("protocol", "").toLowerCase());
-            tags.put(HTTP_HOST.getKey(), connectionParameters.getOrDefault("host", "").concat(":")
+            tags.put(NET_HOST_NAME.getKey(), connectionParameters.getOrDefault("host", "").concat(":")
                     .concat(connectionParameters.getOrDefault("port", "")));
             tags.put(NET_PEER_NAME.getKey(), connectionParameters.getOrDefault("host", ""));
             tags.put(NET_PEER_PORT.getKey(), connectionParameters.getOrDefault("port", ""));
@@ -192,7 +192,7 @@ public class HttpComponent extends AbstractProcessorComponent {
     private Map<String, String> requestHeaders(HttpRequestAttributes attributes) {
         log.trace("Request headers: {}", attributes.getHeaders().toString());
         Map<String, String> tags = new HashMap<>();
-        tags.put(HTTP_HOST.getKey(), attributes.getHeaders().get("host"));
+        tags.put(NET_HOST_NAME.getKey(), attributes.getHeaders().get("host"));
         tags.put(HTTP_USER_AGENT.getKey(), attributes.getHeaders().get("user-agent"));
         tags.put(HTTP_REQUEST_CONTENT_LENGTH.getKey(), attributes.getHeaders().get("content-length"));
         tags.put(Constants.HTTP_CONTENT_TYPE, attributes.getHeaders().get("content-type"));

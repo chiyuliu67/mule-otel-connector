@@ -51,10 +51,6 @@ public interface ProcessorComponent {
     /**
      * For flows with a source component, this method can allow processor components
      * to build source specific traces.
-     *
-     * @param notification
-     * @param contextPropagation
-     * @return Optional trace component
      */
     default Optional<TraceMetadata> getSourceEndTraceComponent(EnrichedServerNotification notification,
             ContextPropagation contextPropagation) {

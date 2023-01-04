@@ -43,10 +43,6 @@ public class ComponentWrapper {
         return parameters;
     }
 
-    public String getParameter(String parameter) {
-        return parameters.get(parameter);
-    }
-
     public String getConfigRef() {
         return parameters.get("config-ref");
     }

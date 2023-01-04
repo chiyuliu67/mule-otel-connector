@@ -14,5 +14,5 @@ import org.mule.runtime.api.meta.Category;
 @Extension(name = "Open Telemetry Connector", category = Category.COMMUNITY)
 @Configurations(ConnectorConfiguration.class)
 @SuppressWarnings("unused")
-public class OpenTelemetryConnector {
+public class ConnectorMain {
 }
