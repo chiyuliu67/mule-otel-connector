@@ -27,7 +27,7 @@ public class TraceVault {
         Optional<Trace> transaction = getTransaction(transactionId);
         if (transaction.isPresent()) {
             log.debug("Start transaction: {}, flow: {}", transactionId, rootFlowName);
-            transaction.get().getRootFlowSpan().addProcessorSpan(rootFlowName, rootFlowSpan);
+            transaction.get().getRootFlowSpan().addSpan(rootFlowName, rootFlowSpan);
         } else {
             Span span = rootFlowSpan.startSpan();
             log.debug("Start transaction: {}, flow: {}, spanId {}, traceId {}", transactionId, rootFlowName,
@@ -54,7 +54,7 @@ public class TraceVault {
 
     public void startSpan(String transactionId, String location, SpanBuilder spanBuilder) {
         getTransaction(transactionId).ifPresent(trace -> {
-            Span span = trace.getRootFlowSpan().addProcessorSpan(location, spanBuilder);
+            Span span = trace.getRootFlowSpan().addSpan(location, spanBuilder);
             log.debug("Start span, transaction: {}, location: {}, spanId: {}, traceId: {}", transactionId, location,
                     span.getSpanContext().getSpanId(), span.getSpanContext().getTraceId());
         });
@@ -63,7 +63,7 @@ public class TraceVault {
     public void endSpan(String transactionId, String location, Consumer<Span> spanUpdater, Instant endTime) {
         log.trace("End span, transaction: {}, location: {}", transactionId, location);
         getTransaction(transactionId)
-                .ifPresent(trace -> trace.getRootFlowSpan().endProcessorSpan(location, spanUpdater, endTime));
+                .ifPresent(trace -> trace.getRootFlowSpan().endSpan(location, spanUpdater, endTime));
     }
 
     private Optional<Trace> getTransaction(String transactionId) {

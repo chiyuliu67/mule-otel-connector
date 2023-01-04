@@ -31,23 +31,23 @@ public class SpanManager implements Serializable {
         return span;
     }
 
-    public Span addProcessorSpan(String location, SpanBuilder spanBuilder) {
+    public Span addSpan(String location, SpanBuilder spanBuilder) {
         if (ending || ended)
             throw new UnsupportedOperationException(
                     "Flow: " + flowName + ", span: " + (ended ? ", end" : "is finishing"));
         Span span = spanBuilder.setParent(Context.current().with(getSpan())).startSpan();
         childSpans.put(location, span);
-        log.debug("Add span: {}", span.getSpanContext().getSpanId());
+        log.debug("Start span: {}, location: {}", span.getSpanContext().getSpanId(), location);
         return span;
     }
 
-    public void endProcessorSpan(String location, Consumer<Span> spanUpdater, Instant endTime) {
+    public void endSpan(String location, Consumer<Span> spanUpdater, Instant endTime) {
         if ((!ending || ended) && childSpans.containsKey(location)) {
             Span removed = childSpans.remove(location);
             if (spanUpdater != null) {
                 spanUpdater.accept(removed);
             }
-            log.debug("Removed span: {}, location: {}", removed.getSpanContext().getSpanId(), location);
+            log.debug("End span: {}, location: {}", removed.getSpanContext().getSpanId(), location);
             removed.end(endTime);
         }
     }
@@ -56,6 +56,7 @@ public class SpanManager implements Serializable {
         ending = true;
         childSpans.forEach((location, span) -> span.end(endTime));
         span.end(endTime);
+        log.debug("End span: {}", span.getSpanContext().getSpanId());
         ended = true;
     }
 }
