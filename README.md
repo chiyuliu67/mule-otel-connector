@@ -6,7 +6,7 @@ Mulesoft connector that allows a service to participate or initiate a transactio
 1. [Introduction](#introduction)
 2. [Architecture](#architecture)
 3. [Configuration](#configuration)
-    1. [Debugging applications in local environment](#debugging-applications-in-local-environments)
+    1. [Debugging applications in local](#debugging-applications-in-local)
        1. [Sending traces to a local Jaeger](#sending-traces-to-a-local-jaeger)
        2. [Sending traces to the log](#sending-traces-to-the-log)
     2. [Additional configuration](#additional-configuration)
@@ -28,39 +28,42 @@ Mulesoft connector that allows a service to participate or initiate a transactio
 
 # Introduction
 
-The connector implements the OpenTelemetry standard to instrument, generate, collect, and export telemetry data (metrics, logs, and traces) to help you analyze your software’s performance and behavior [https://opentelemetry.io/](https://opentelemetry.io/). This project uses the OpenTelemetry Java SDK [https://github.com/open-telemetry/opentelemetry-java](https://github.com/open-telemetry/opentelemetry-java)
+OpenTelemetry is an open-source framework for collecting and processing telemetry data that is used by many companies and organizations to monitor and troubleshoot their applications in production. It provides a standard way to instrument applications, send telemetry data to a backend, and analyze it.
+
+One of the key features of OpenTelemetry is its ability to trace the flow of a request through a distributed system. This is accomplished through the use of spans, which are units of work that are traced within a trace. Each span represents a single operation within the trace and can be used to represent a database query, a network request, or any other action that happens within the trace.
+
+Spans are used to build a tree-like structure called a trace, which represents the flow of a request as it travels through a distributed system. Each span in the trace has a unique identifier and is associated with information about the operation it represents, such as the name of the operation, the start and end time, and any metadata or tags associated with the span.
+
+In addition to tracing, OpenTelemetry also provides support for collecting metrics and logs. This allows you to get a comprehensive view of the performance and behavior of your application, which can be useful for identifying issues and optimizing performance.
+
+One of the benefits of using OpenTelemetry is that it is vendor-neutral and easily integrates with a wide range of systems and tools. This means that you can use it with your choice's backend and analysis tools and switch between different ones without having to re-instrument your application.
+
+Overall, OpenTelemetry is a valuable tool for anyone looking to monitor and troubleshoot their applications in production. It provides a standard way to collect and process telemetry data, and its support for tracing, metrics, and logs makes it a powerful tool for understanding the performance and behavior of your application.
 
 # Architecture
 
-The connector follows a minimalistic approach that helps to implement the following architecture with the default values
-
+This project uses the OpenTelemetry Java SDK https://github.com/open-telemetry/opentelemetry-java. The connector follows a minimalistic approach that helps to implement the following architecture.
 ![Architecture diagram](docs/architecture.png)
+*Architecture diagram*
 
-Architecture diagram
-
-The connector will send the telemetry data using the otlp protocol to an open telemetry collector, that is responsible to collect all inputs from the services, process them and export the data to an observability backend like Jaeger for example.
-
+The connector will send the telemetry data using the otlp protocol to an open telemetry collector that is responsible for collecting all inputs from the services, processing them, and exporting the data to an observability backend like Jaeger.
 # Configuration
 
-The connector offers configuration windows where We can set the most important parameters
+The connector embraces the configuration through the environment variables described in the OpenTelemetry SDK Auto-configure:
+- https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/
+- https://opentelemetry.io/docs/reference/specification/sdk-environment-variables/
+- https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/exporter.md
 
-
+The basic parametrization can be done through the component configuration window:
 ![Configuration window](docs/configuration-window.png)
 
-Configuration window
+*Configuration window*
 
-| Parameter | Description |
-| --- | --- |
-| Service name | The name of the service that is used to name the traces. Example: salesforce-customer-sapi. This value is connected with the environment variable: OTEL_SERVICE_NAME, which is described in the SDK documentation |
-| Additional tags | Specify resource attributes in the following format: key1=val1,key2=val2,key3=val3. Example: layer=sapi, environment:local. This value is connected with the environment variable: OTEL_RESOURCE_ATTRIBUTES, which is described in the SDK documentation |
-| Collector endpoint | The OTLP traces endpoint to connect to. Must be a URL with a scheme of either http or https based on the use of TLS. The default is http://localhost:4317 when the protocol is grpc, and http://localhost:4318/v1/traces when the protocol is http/protobuf. The value is connected with the environment variable: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT, which is described in the SDK documentation |
-
-Beyond the standard configuration described above, the connector is highly configurable using system properties or environment variables, and all of them are described in the SDK documentation, links:
-
-- [OpenTelemetry SDK Auto-configure](https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/README.md)
-- [OpenTelemetry Environment Variable Specification](https://opentelemetry.io/docs/reference/specification/sdk-environment-variables/)
-
-For more specific configuration about the exporter, follow the next link: [Exporter](https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/exporter.md)
+| Parameter                                                                                                                                                                                                                                                                                  | Description                                                                                                                                                                                                                                                             |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Service name                                                                                                                                                                                                                                                                               | The name of the service that is used to name the main trace. Example: salesforce-customer-sapi. This value is connected with the environment variable: OTEL_SERVICE_NAME, described in the SDK documentation                                                            |
+| Additional tags                                                                                                                                                                                                                                                                            | Specify resource attributes in the following format: key1=val1,key2=val2,key3=val3. Example: layer=sapi, environment:local. This value is connected with the environment variable: OTEL_RESOURCE_ATTRIBUTES                                                             |
+| Collector endpoint | The OTLP traces endpoint to connect to. The default is http://localhost:4317 when the protocol is GRPC and http://localhost:4318/v1/traces when the protocol is HTTP/PROTOBUF. The value is connected with the environment variable: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT |
 
 Configuration example of the connector in the mule configuration file like global.xml:
 
@@ -76,68 +79,23 @@ Configuration example of the connector in the mule configuration file like globa
 </open-telemetry:config>
 ```
 
-Injection of properties example:
-
-```bash
--M-Ddeployment.name=micorp-integrationorder-papi
--M-Denv=local 
--M-Dotel.collectorendpoint=http://22.52.172.177:4317
-```
-
-## Debugging applications in local environments
+## Debugging applications in local
 
 ### Sending traces to a local Jaeger
 
-By default, the connector will send the traces to localhost:4317, we can run the Jaeger server in all-in-one mode. Different configurations can be found in the official documentation [https://www.jaegertracing.io/docs/1.38/getting-started/](https://www.jaegertracing.io/docs/1.38/getting-started/). We enable the property --collector.otlp.enabled=true to receive the trace data in otlp format
-
+By default, the connector will send the traces to localhost:4317. Jaeger server can be configured to collect traces using all-in-one mode. Documentation: https://www.jaegertracing.io/docs/1.38/getting-started/. Example:
 Jaeger on local
 
 ```bash
 ./jaeger-all-in-one --collector.otlp.enabled=true
 ```
 
-For the connector configuration, there is no need to configure the collectorEndpoint property
-
-```xml
-<open-telemetry:config 
-  name="Open_Telemetry_Connector_Config" 
-  doc:name="Open Telemetry Connector Config" 
-  doc:id="5c85f8ab-75c8-45b2-b93d-311337bc24bf" 
-  serviceName="${deployment.name}" 
-  additionalTags="environment=${env}, layer=papi" 
-  doc:description="Using the standard configuration.&#10;&#10;Overriding the collector endpoint.">
-</open-telemetry:config>
-```
-
 ### Sending traces to the log
 
-To send the traces to the log we configure the connector with default values
-
-
-
-```xml
-<open-telemetry:config 
-  name="Open_Telemetry_Connector_Config" 
-  doc:name="Open Telemetry Connector Config" 
-  doc:id="5c85f8ab-75c8-45b2-b93d-311337bc24bf">
-</open-telemetry:config>
-```
-
-Start the mule engine with the next property
-
+Using the default configuration values for the connector, start the mule engine with the next property
 ```bash
 -M-Dotel.traces.exporter=logging
 ```
-
-## Additional configuration
-
-The next properties are not specific to the [OpenTelemetry SDK](https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/README.md), but control the behavior of the connector
-
-**System Properties**
-
-| Property | Description |
-| --- | --- |
-| otel.mule.enabletracing | Enable or disables the tracing library. Default value true |
 
 # Using the connector
 
