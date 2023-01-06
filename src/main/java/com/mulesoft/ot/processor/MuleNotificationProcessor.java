@@ -70,10 +70,13 @@ public class MuleNotificationProcessor {
             TraceMetadata traceMetadata = processorComponent.getEndTraceComponent(notification);
             otelConnection.getTraceVault().endSpan(traceMetadata.getCorrelationId(), traceMetadata.getLocation(),
                     span -> {
+                        // Verify if an error happened
                         if (notification.getEvent().getError().isPresent()) {
+                            log.debug("Log the error in the span");
                             Error error = notification.getEvent().getError().get();
                             span.recordException(error.getCause());
                         }
+
                         setSpanStatus(traceMetadata, span);
                         if (traceMetadata.getTags() != null)
                             traceMetadata.getTags().forEach(span::setAttribute);
@@ -122,6 +125,7 @@ public class MuleNotificationProcessor {
                 traceMetadata.getTags().forEach(rootSpan::setAttribute);
                 setSpanStatus(traceMetadata, rootSpan);
                 if (notification.getException() != null) {
+                    log.debug("Log the error in the span");
                     rootSpan.recordException(notification.getException());
                 }
             }, Instant.ofEpochMilli(notification.getTimestamp()));
