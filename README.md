@@ -41,20 +41,20 @@ Overall, OpenTelemetry is a valuable tool for anyone looking to monitor and trou
 
 This project uses the OpenTelemetry Java SDK https://github.com/open-telemetry/opentelemetry-java. The connector follows a minimalistic approach that helps to implement the following architecture.
 ![Architecture diagram](docs/architecture.png)
-*Architecture diagram*
+
 
 The connector will send the telemetry data using the otlp protocol to an open telemetry collector that is responsible for collecting all inputs from the services, processing them, and exporting the data to an observability backend like Jaeger.
 # Configuration
 
 The connector embraces the configuration through the environment variables described in the OpenTelemetry SDK Auto-configure:
-- https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/
-- https://opentelemetry.io/docs/reference/specification/sdk-environment-variables/
-- https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/exporter.md
+
+ - https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/
+ - https://opentelemetry.io/docs/reference/specification/sdk-environment-variables/
+ - https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/protocol/exporter.md
 
 The basic parametrization can be done through the component configuration window:
 ![Configuration window](docs/configuration-window.png)
 
-*Configuration window*
 
 | Parameter                                                                                                                                                                                                                                                                                  | Description                                                                                                                                                                                                                                                             |
 |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -96,7 +96,7 @@ Using the default configuration values for the connector, start the mule engine 
 
 The connector will generate a new span for every flow in the service, so if it is required to measure the performance of a group of components, they should be grouped in a flow. The HTTP connector has the ability to propagate context to remote services using the W3C Trace Context HTTP headers. In the example below, the header traceparent is sent to the remote service:
 
-![traceparent](docs/traceparent.png)
+![traceparent](docs/traceparent.png "traceparent")
 
 The connector will provide the global variable: openTelemetryTrace.traceparent, which can be used to propagate the trace.
 
@@ -264,8 +264,7 @@ Attributes
 
 In the next image the listener component is the source:
 
-<img src="docs/tag-source-example.png" width=50% height=50%>
-
+![Source example](docs/tag-source-example.png)
 
 **PROCESSOR**. Metadata about the component that creates a new span. The runtime value is taken from:
 
