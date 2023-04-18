@@ -128,6 +128,9 @@ public class HttpComponent extends AbstractProcessorComponent {
     @Override
     public Optional<TraceMetadata> getSourceEndTraceComponent(EnrichedServerNotification notification,
             ContextPropagation contextPropagation) {
+
+        // The otel connector uses the httpStatus variable from the flow to set status
+        // code for the tracing
         TypedValue<?> httpStatus = notification.getEvent().getVariables().get("httpStatus");
         if (httpStatus != null) {
             String statusCode = TypedValue.unwrap(httpStatus).toString();

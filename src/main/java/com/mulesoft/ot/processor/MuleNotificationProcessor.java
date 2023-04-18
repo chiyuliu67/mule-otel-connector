@@ -72,7 +72,7 @@ public class MuleNotificationProcessor {
                     span -> {
                         // Verify if an error happened
                         if (notification.getEvent().getError().isPresent()) {
-                            log.debug("Log the error in the span");
+                            log.debug("spanId: {}, log the error into the span", span.getSpanContext().getSpanId());
                             Error error = notification.getEvent().getError().get();
                             span.recordException(error.getCause());
                         }
@@ -125,7 +125,7 @@ public class MuleNotificationProcessor {
                 traceMetadata.getTags().forEach(rootSpan::setAttribute);
                 setSpanStatus(traceMetadata, rootSpan);
                 if (notification.getException() != null) {
-                    log.debug("Log the error in the span");
+                    log.debug("spanId: {}, log the error in the span", rootSpan.getSpanContext().getSpanId());
                     rootSpan.recordException(notification.getException());
                 }
             }, Instant.ofEpochMilli(notification.getTimestamp()));

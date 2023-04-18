@@ -47,7 +47,7 @@ public class SpanManager implements Serializable {
             if (spanUpdater != null) {
                 spanUpdater.accept(removed);
             }
-            log.debug("End span: {}, location: {}", removed.getSpanContext().getSpanId(), location);
+            log.debug("End spanId: {}, location: {}", removed.getSpanContext().getSpanId(), location);
             removed.end(endTime);
         }
     }

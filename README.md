@@ -12,10 +12,7 @@ Mulesoft connector that allows a service to participate or initiate a transactio
     2. [Additional configuration](#additional-configuration)
 4. [Using the connector](#using-the-connector)
     1. [Add custom tags](#add-custom-tags)
-       1. [Environment tags](#environment-tags)
-       2. [Runtime tags](#runtime-tags)
-    2. [Retrieving the current span during a flow](#retrieving-the-current-span-during-a-flow)
-    3. [Getting the status code for the service](#getting-the-status-code-for-the-service)
+    2. [Getting the status code for the service](#getting-the-status-code-for-the-service)
 5. [Debugging the connector](#debugging-the-connector)
 6. [Available tags in traces](#available-tags-in-traces)
    1. [Host](#host)
@@ -65,8 +62,7 @@ The basic parametrization can be done through the component configuration window
 | Additional tags                                                                                                                                                                                                                                                                            | Specify resource attributes in the following format: key1=val1,key2=val2,key3=val3. Example: layer=sapi, environment:local. This value is connected with the environment variable: OTEL_RESOURCE_ATTRIBUTES                                                             |
 | Collector endpoint | The OTLP traces endpoint to connect to. The default is http://localhost:4317 when the protocol is GRPC and http://localhost:4318/v1/traces when the protocol is HTTP/PROTOBUF. The value is connected with the environment variable: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT |
 
-Configuration example of the connector in the mule configuration file like global.xml:
-
+Configuration example of the connector in the mule configuration file global.xml:
 ```xml
 <open-telemetry:config 
 	name="Open_Telemetry_Connector_Config" 
@@ -75,7 +71,7 @@ Configuration example of the connector in the mule configuration file like globa
 	serviceName="${deployment.name}" 
 	additionalTags="environment=${env}, layer=papi" 
 	collectorEndpoint="${otel.collectorendpoint}"
-	doc:description="Using the standard configuration.&#10;&#10;Overriding the collector endpoint.">
+	doc:description="Using the standard configuration. Overriding the collector endpoint.">
 </open-telemetry:config>
 ```
 
@@ -84,7 +80,6 @@ Configuration example of the connector in the mule configuration file like globa
 ### Sending traces to a local Jaeger
 
 By default, the connector will send the traces to localhost:4317. Jaeger server can be configured to collect traces using all-in-one mode. Documentation: https://www.jaegertracing.io/docs/1.38/getting-started/. Example:
-Jaeger on local
 
 ```bash
 ./jaeger-all-in-one --collector.otlp.enabled=true
@@ -99,36 +94,32 @@ Using the default configuration values for the connector, start the mule engine 
 
 # Using the connector
 
-By default, the connector will generate traces for every flow in your service and will pass automatically the span data to any service call that was imported from Anypoint Exchange. In the next example, Get Orders (number 2) and Get Customers (number 1) calls will propagate trace data to the child services.
+The connector will generate a new span for every flow in the service, so if it is required to measure the performance of a group of components, they should be grouped in a flow. The HTTP connector has the ability to propagate context to remote services using the W3C Trace Context HTTP headers. In the example below, the header traceparent is sent to the remote service:
+
+![traceparent](docs/traceparent.png)
+
+The connector will provide the global variable: openTelemetryTrace.traceparent, which can be used to propagate the trace.
+
+In the next example, Get Orders (number 2) and Get Customers (number 1) calls will propagate trace data to the child services.
 
 ![Mule flow example](docs/mule-flow.png)
+*Mule flow example*
 
-Mule flow example
 
-The complete trace data in the Observability Backend:
-
+The complete trace data in the Observability Backend (Jaeger)
 ![Traces example in Jaeger](docs/tracing-example.png)
+*Traces example in Jaeger*
 
-Traces example in Jaeger
 
 ## Add custom tags
 
-### Environment tags
-
-We can add tags to the traces related to environment variables, for example, environment name, name of the container, cloud region, instance number, etc. See in the configuration section of this document the parameter: Additional tags
-
-### Runtime tags
-
-In every flow, we can create custom tags for the trace, helping us to query traces using this data in the observability backend. In the next example, we added a custom tag at the beginning of the flow with the product number (poNumber)= 123604. The tag is sent with the telemetry data that later We use to query the traces. The process to add the tags to the flow is by setting the process variable `openTelemetryTags`
+The spans can be enriched with custom tags. These tags can hold the values of environment variables like container name, cloud region, instance number, etc. These tags are configured in the connector configuration window. Also, we have runtime tags set at flow level that can hold business data like product number, client name, order date, etc. To set the tags, a global variable is provided: openTelemetryTags
 
 Example, business flow:
 
 ![Example, setting business data on tags](https://raw.githubusercontent.com/jpontdia/mule-otel-connector/main/docs/custom-tag-flow.png)
 
-Example, setting business data on tags
-
-Code for “Set Variable” operation. Setting variable:`openTelemetryTags`
-
+Code for “Set Variable” operation and variable: openTelemetryTags
 ```java
 %dw 2.0
 output application/java
@@ -139,21 +130,14 @@ output application/java
 }
 ```
 
-In the observability backend query by tag example:
+
+In the observability backend, the tags can be queried, and the results will shown the matches:
 
 ![Example, querying business data on tags ](https://raw.githubusercontent.com/jpontdia/mule-otel-connector/main/docs/query-tags.png)
 
-Example, querying business data on tags
-
-The search will give us all the traces with the tag query criteria. In the next image
+The next image shows the queried tag along with others that are part of the span:
 
 ![Example, querying business data on tags results ](https://raw.githubusercontent.com/jpontdia/mule-otel-connector/main/docs/custom-tags.png)
-
-Example, querying business data on tags results
-
-## Retrieving the current span during a flow
-
-The current span data can be retrieved by inspecting the value of the process variable `openTelemtryTrace`.  This data can be useful to send manually the current span to other services or connectors.
 
 ## Getting the status code for the service
 
@@ -172,11 +156,9 @@ To show the connector logs with debug level, add the next logger to log4j2.xml:
 <AsyncLogger name="com.mulesoft.ot" level="DEBUG"/>
 ```
 
-Available levels: INFO, DEBUG, TRACE
-
 # Available tags in traces
 
-Next is the list of the available tags that are included in the tracing.
+Next is the list of the available tags included in the tracing.
 
 ## Host
 
@@ -265,11 +247,11 @@ MULE service metadata
 
 ```
 ComponentIdentifier sourceIdentifier = enrichedServerNotification
-																				.getEvent()
-																				.getContext()
-																				.getOriginatingLocation()
-																				.getComponentIdentifier()
-																				.getIdentifier();
+					.getEvent()
+					.getContext()
+					.getOriginatingLocation()
+					.getComponentIdentifier()
+					.getIdentifier();
 ```
 
 Attributes

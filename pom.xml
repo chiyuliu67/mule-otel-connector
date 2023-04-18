@@ -7,7 +7,7 @@
     <artifactId>mule-otel-connector</artifactId>
 
     <!--A change in version should be reflected in Constants.java (LIBRARY_VERSION) -->
-    <version>1.0.68</version>
+    <version>1.0.69</version>
     <packaging>mule-extension</packaging>
 
     <parent>
@@ -21,6 +21,10 @@
     <url>https://github.com/MESMD/calarm-mule-otel-connector</url>
 
     <properties>
+        <!-- Exchange documentation -->
+        <fields key="sourceCode">https://github.com/jpontdia/microp-commons</fields>
+        <tags>OpenTelemetry, Salesfoce</tags>
+
         <!-- Project configuration -->
         <project.github.repository>jpontdia/mule-otel-connector</project.github.repository>
         <repository.url>git@github.com:${project.github.repository}.git</repository.url>
@@ -30,16 +34,16 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         
         <!--Overriding versions of parent POM -->
-        <mule.maven.plugin.version>3.7.1</mule.maven.plugin.version>
+        <mule.maven.plugin.version>3.8.4</mule.maven.plugin.version>
         <build.plugins.plugin.version>2.3.2</build.plugins.plugin.version>
         <munit.extensions.maven.plugin.version>1.1.2</munit.extensions.maven.plugin.version>
-        <munit.version>2.3.8</munit.version>
+        <munit.version>2.3.15</munit.version>
 
         <!-- Plugins -->
-        <maven.checkstyle.plugin.version>3.2.0</maven.checkstyle.plugin.version>
+        <maven.checkstyle.plugin.version>3.2.1</maven.checkstyle.plugin.version>
 
         <!--Connector versions -->
-        <mule.http.connector.version>1.7.3</mule.http.connector.version>
+        <mule-http-connector.version>1.7.3</mule-http-connector.version>
 
         <!--Spotless, Java Code Formatter -->
         <spotless.version>2.19.0</spotless.version>
@@ -154,7 +158,7 @@
         <dependency>
             <groupId>org.mule.connectors</groupId>
             <artifactId>mule-http-connector</artifactId>
-            <version>${mule.http.connector.version}</version>
+            <version>${mule-http-connector.version}</version>
             <classifier>mule-plugin</classifier>
             <scope>provided</scope>
         </dependency>
@@ -244,8 +248,8 @@
     <distributionManagement>
         <repository>
             <id>anypoint-exchange-v3</id>
-            <name>Exchange Repository</name>
-            <url>https://maven.anypoint.mulesoft.com/api/v2/organizations/${project.groupId}/maven</url>
+            <name>Assets for your anypoint organization</name>
+            <url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
             <layout>default</layout>
         </repository>
     </distributionManagement>
