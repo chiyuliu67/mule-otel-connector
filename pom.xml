@@ -3,18 +3,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>078efef1-d139-48ed-92f5-f8d4a0592374</groupId>
+    <groupId>d4f8b284-b99a-4df7-b44d-61196abc2dfb</groupId>
     <artifactId>mule-otel-connector</artifactId>
 
     <!--A change in version should be reflected in Constants.java (LIBRARY_VERSION) -->
-    <version>1.0.74</version>
+    <version>1.0.75</version>
     <packaging>mule-extension</packaging>
 
     <!-- https://github.com/mulesoft/mule-extensions-parent/releases/tag/1.4.2 -->
     <parent>
         <groupId>org.mule.extensions</groupId>
         <artifactId>mule-modules-parent</artifactId>
-        <version>1.4.2</version>
+        <version>1.10.0</version>
     </parent>
 
     <name>mule-otel-connector</name>
@@ -30,20 +30,12 @@
         <repository.url>git@github.com:${project.github.repository}.git</repository.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
         
         <!--Overriding versions of parent POM -->
         <mule.maven.plugin.version>3.8.4</mule.maven.plugin.version>
         <build.plugins.plugin.version>2.3.2</build.plugins.plugin.version>
         <munit.extensions.maven.plugin.version>1.1.2</munit.extensions.maven.plugin.version>
         <munit.version>2.3.8</munit.version>
-
-        <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
-
-        <!--
-        <maven.javadoc.plugin.version>3.4.1</maven.javadoc.plugin.version>
-        -->
 
         <!-- Maven Plugins -->
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
@@ -137,8 +129,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- To deploy this parent-pom to exchange -->
             <plugin>
                 <groupId>org.mule.tools.maven</groupId>
                 <artifactId>exchange-mule-maven-plugin</artifactId>
@@ -284,8 +274,8 @@
     <!-- To deploy artifacts in Anypoint Organization Repository -->
     <distributionManagement>
         <repository>
-            <id>anypoint-exchange-v3</id>
-            <name>Assets for your anypoint organization</name>
+            <id>DCSA-BG2-anypoint-exchange</id>
+            <name>DCSA-BG2-anypoint-exchange</name>
             <url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
             <layout>default</layout>
         </repository>
