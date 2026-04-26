@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.mule.extensions</groupId>
         <artifactId>mule-modules-parent</artifactId>
-        <version>1.4.2</version>
+        <version>1.6.23</version>
     </parent>
 
     <name>mule-otel-connector</name>
@@ -30,8 +30,6 @@
         <repository.url>git@github.com:${project.github.repository}.git</repository.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
         
         <!--Overriding versions of parent POM -->
         <mule.maven.plugin.version>3.8.4</mule.maven.plugin.version>
@@ -41,7 +39,7 @@
 
         <maven.javadoc.plugin.version>3.2.0</maven.javadoc.plugin.version>
 
-        <!--
+	<!--
         <maven.javadoc.plugin.version>3.4.1</maven.javadoc.plugin.version>
         -->
 
@@ -51,7 +49,7 @@
 
         <!-- Mulesoft Connectors-->
         <mule-http-connector.version>1.7.3</mule-http-connector.version>
-        <exchange-mule-maven-plugin.version>0.0.17</exchange-mule-maven-plugin.version>
+	<exchange-mule-maven-plugin.version>0.1.7</exchange-mule-maven-plugin.version>
 
 
         <!--Spotless, Java Code Formatter -->
@@ -159,6 +157,9 @@
                         </goals>
                     </execution>
                 </executions>
+		<configuration>
+		    <skip>${skipExchangePublish}</skip>
+		</configuration>
                 <inherited>false</inherited>
             </plugin>
 
@@ -248,6 +249,14 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>${log4j-slf4j-impl.version}</version>
+        </dependency>
+
+        <!-- javax.annotation.Nullable (JSR-305, not in Mule 4.6 runtime) -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
